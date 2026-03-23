@@ -1,0 +1,31 @@
+/* 自定义主题颜色 */
+:root {
+  --theme-color: #49b1f5;
+  --theme-color-dark: #3c9bdf;
+}
+
+/* 文章标题样式 */
+.post-title {
+  font-size: 2rem;
+  font-weight: bold;
+  background: linear-gradient(120deg, var(--theme-color), #8ec5fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 代码块优化 */
+.highlight {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-color);
+  border-radius: 4px;
+}
