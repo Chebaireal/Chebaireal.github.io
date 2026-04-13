@@ -1,0 +1,1555 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>机器人操作系统 | Hexo</title><meta name="author" content="Cipher"><meta name="copyright" content="Cipher"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、具身智能与ROS概述1.1 什么是具身智能？具身智能（Embodied Intelligence）是基于物理身体实现感知、行动与认知深度融合的智能系统。 核心特征：智能体通过实体载体与动态物理环境进行实时交互，获取环境信息、分析问题、制定决策并执行物理动作，区别于传统脱离物理载体的虚拟AI系统。 具身的核心内涵：为智能赋予物理载体，让AI算法与数据摆脱纯数字层面的局限，依托实体硬件与物理世界建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器人操作系统">
+<meta property="og:url" content="https://chebaireal.github.io/2026/04/13/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、具身智能与ROS概述1.1 什么是具身智能？具身智能（Embodied Intelligence）是基于物理身体实现感知、行动与认知深度融合的智能系统。 核心特征：智能体通过实体载体与动态物理环境进行实时交互，获取环境信息、分析问题、制定决策并执行物理动作，区别于传统脱离物理载体的虚拟AI系统。 具身的核心内涵：为智能赋予物理载体，让AI算法与数据摆脱纯数字层面的局限，依托实体硬件与物理世界建">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chebaireal.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-04-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-13T11:39:00.925Z">
+<meta property="article:author" content="Cipher">
+<meta property="article:tag" content="ROS2">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="机器人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chebaireal.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "机器人操作系统",
+  "url": "https://chebaireal.github.io/2026/04/13/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/",
+  "image": "https://chebaireal.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-04-12T16:00:00.000Z",
+  "dateModified": "2026-04-13T11:39:00.925Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Cipher",
+      "url": "https://chebaireal.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://chebaireal.github.io/2026/04/13/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '机器人操作系统',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">机器人操作系统</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">机器人操作系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-12T16:00:00.000Z" title="发表于 2026-04-13 00:00:00">2026-04-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-13T11:39:00.925Z" title="更新于 2026-04-13 19:39:00">2026-04-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="一、具身智能与ROS概述"><a href="#一、具身智能与ROS概述" class="headerlink" title="一、具身智能与ROS概述"></a>一、具身智能与ROS概述</h2><h3 id="1-1-什么是具身智能？"><a href="#1-1-什么是具身智能？" class="headerlink" title="1.1 什么是具身智能？"></a>1.1 什么是具身智能？</h3><p>具身智能（Embodied Intelligence）是基于物理身体实现感知、行动与认知深度融合的智能系统。</p>
+<p>核心特征：智能体通过实体载体与动态物理环境进行实时交互，获取环境信息、分析问题、制定决策并执行物理动作，区别于传统脱离物理载体的虚拟AI系统。</p>
+<p><strong>具身的核心内涵</strong>：为智能赋予物理载体，让AI算法与数据摆脱纯数字层面的局限，依托实体硬件与物理世界建立交互闭环。</p>
+<p><strong>三种智能形态辨析</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>离身智能</td>
+<td>不依赖物理载体，仅在虚拟符号空间内完成信息处理与推理</td>
+</tr>
+<tr>
+<td>具身智能</td>
+<td>以感知-行动闭环为核心，依托物理身体与环境直接交互</td>
+</tr>
+<tr>
+<td>反身智能</td>
+<td>对自身内部状态、决策逻辑的监控与调整，具备初步自我反思能力</td>
+</tr>
+</tbody></table>
+<p><strong>传统AI与具身AI对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>传统AI</th>
+<th>具身AI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>环境</td>
+<td>静态、封闭的数字空间</td>
+<td>动态、开放的物理世界</td>
+</tr>
+<tr>
+<td>输入</td>
+<td>单一&#x2F;特定模态数据</td>
+<td>多模态实时传感器数据流</td>
+</tr>
+<tr>
+<td>输出</td>
+<td>数字信号</td>
+<td>可落地的物理动作</td>
+</tr>
+<tr>
+<td>目标</td>
+<td>完成模式识别、内容生成等数字任务</td>
+<td>在复杂物理环境中完成具体实操任务</td>
+</tr>
+<tr>
+<td>学习方式</td>
+<td>基于大规模静态数据集训练</td>
+<td>通过与环境实时交互、试错迭代学习</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-什么是ROS？"><a href="#1-2-什么是ROS？" class="headerlink" title="1.2 什么是ROS？"></a>1.2 什么是ROS？</h3><p>ROS（Robot Operating System）是开源的机器人软件框架。虽然名字中带有操作系统，但实际上它是一个中间件，或者更简单地看成是一个应用程序的开发库。</p>
+<p>ROS的功能包括：</p>
+<ul>
+<li>硬件抽象</li>
+<li>底层设备控制</li>
+<li>常用功能的实现</li>
+<li>进程之间的消息传递</li>
+<li>功能包管理</li>
+<li>在多台计算机之间获取、构建、编写和运行代码的工具和库</li>
+</ul>
+<p><strong>ROS的三大要素</strong>：</p>
+<ul>
+<li>Plumbing（管道）：核心是消息传递系统，通过发布&#x2F;订阅模式管理分布式节点之间的通信细节</li>
+<li>Tools（工具）：包括launch、rviz、Gazebo、rqt等，用于调试、可视化、绘图、日志记录和回放</li>
+<li>Capabilities（能力）：ROS生态系统是机器人软件的仓库，从驱动程序到算法再到用户界面</li>
+</ul>
+<h3 id="1-3-ROS预备知识"><a href="#1-3-ROS预备知识" class="headerlink" title="1.3 ROS预备知识"></a>1.3 ROS预备知识</h3><table>
+<thead>
+<tr>
+<th>知识领域</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>操作系统</td>
+<td>熟悉Linux操作系统，掌握基本命令行操作</td>
+</tr>
+<tr>
+<td>编程语言</td>
+<td>C++（C++11&#x2F;14&#x2F;17标准）和Python</td>
+</tr>
+<tr>
+<td>软件开发</td>
+<td>掌握软件开发技术和方法，建立软件开发思维模式，使用面向对象技术进行程序设计</td>
+</tr>
+</tbody></table>
+<h3 id="1-4-ROS1-vs-ROS2"><a href="#1-4-ROS1-vs-ROS2" class="headerlink" title="1.4 ROS1 vs ROS2"></a>1.4 ROS1 vs ROS2</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>ROS1</th>
+<th>ROS2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通信中间件</td>
+<td>自定义TCPROS，需要Master节点</td>
+<td>DDS，无需中心节点</td>
+</tr>
+<tr>
+<td>实时性</td>
+<td>不支持</td>
+<td>支持实时控制</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>缺乏内置安全功能</td>
+<td>内置安全功能（认证、加密、访问控制）</td>
+</tr>
+<tr>
+<td>跨平台</td>
+<td>主要支持Linux</td>
+<td>支持Linux、Windows、macOS、RTOS</td>
+</tr>
+<tr>
+<td>嵌入式支持</td>
+<td>较弱</td>
+<td>通过Micro-ROS支持MCU</td>
+</tr>
+<tr>
+<td>多机器人</td>
+<td>无标准方法</td>
+<td>原生支持多机器人系统</td>
+</tr>
+</tbody></table>
+<p><strong>ROS1的缺陷</strong>：</p>
+<ul>
+<li>无实时性</li>
+<li>嵌入式设备不友好</li>
+<li>对网络通信重依赖</li>
+<li>稳定性欠佳，ROS Master可能宕机</li>
+<li>无多机器人系统标准方法</li>
+</ul>
+<h3 id="1-5-DDS（数据分发服务）"><a href="#1-5-DDS（数据分发服务）" class="headerlink" title="1.5 DDS（数据分发服务）"></a>1.5 DDS（数据分发服务）</h3><p>DDS是OMG组织发布的分布式通信规范，采用发布-订阅模型，以中间件形式提供通信服务，并提供多种QoS策略。</p>
+<p><strong>DDS的核心概念</strong>：</p>
+<ul>
+<li>域（Domain）：虚拟通信网络，只有同一域中的实体才能相互发现和交换数据</li>
+<li>主题（Topic）：命名的数据通道，发布者和订阅者通过主题名称进行通信</li>
+<li>发布者（Publisher）：发送数据的应用程序</li>
+<li>订阅者（Subscriber）：接收数据的应用程序</li>
+<li>QoS策略：控制通信行为（可靠性、持久性、延迟等）</li>
+</ul>
+<p><strong>常用DDS实现</strong>：</p>
+<ul>
+<li>Fast DDS（eProxima，开源）</li>
+<li>Cyclone DDS（Eclipse，开源）</li>
+<li>Connext DDS（RTI，商业）</li>
+</ul>
+<p><strong>DDS应用领域</strong>：</p>
+<ul>
+<li>国防军工（宙斯盾舰、捕食者无人机）</li>
+<li>自动驾驶（多传感器融合）</li>
+<li>工业自动化</li>
+</ul>
+<h3 id="1-6-Micro-ROS"><a href="#1-6-Micro-ROS" class="headerlink" title="1.6 Micro-ROS"></a>1.6 Micro-ROS</h3><p>Micro-ROS将ROS2扩展到资源受限的嵌入式平台和微控制器（MCU）。</p>
+<p><strong>核心架构</strong>：</p>
+<ul>
+<li>MCU侧：运行Micro XRCE-DDS Client，支持FreeRTOS、Zephyr、NuttX等RTOS</li>
+<li>主机侧：运行Micro XRCE-DDS Agent，作为客户端与标准DDS世界的桥梁</li>
+<li>传输方式：支持UDP、TCP、串口等</li>
+</ul>
+<h3 id="1-7-ROS版本与支持周期"><a href="#1-7-ROS版本与支持周期" class="headerlink" title="1.7 ROS版本与支持周期"></a>1.7 ROS版本与支持周期</h3><p>ROS版本命名按英文字母顺序，每年5月23日（世界乌龟日）发布新版本。</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>支持期限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通版本</td>
+<td>2年支持</td>
+</tr>
+<tr>
+<td>LTS版本</td>
+<td>5年支持</td>
+</tr>
+</tbody></table>
+<ul>
+<li>ROS1 Noetic Ninjemys是ROS1的最终版本，已于2025年停止维护</li>
+<li>ROS2 Jazzy Jalisco（2024-2029）是当前最新的LTS版本</li>
+<li>目前越来越多的机器人、无人机甚至无人车都采用ROS作为开发平台</li>
+</ul>
+<h3 id="1-8-ROS-Industrial（ROS-I）"><a href="#1-8-ROS-Industrial（ROS-I）" class="headerlink" title="1.8 ROS-Industrial（ROS-I）"></a>1.8 ROS-Industrial（ROS-I）</h3><p>ROS-I将ROS生态带入工业自动化领域，核心目的：</p>
+<ul>
+<li>架起研究与工业的桥梁</li>
+<li>为不同品牌工业机器人提供标准化驱动接口</li>
+<li>将ROS的高级功能（感知、运动规划）与工业机器人的底层可靠性结合</li>
+</ul>
+<hr>
+<h2 id="二、C-现代特性准备"><a href="#二、C-现代特性准备" class="headerlink" title="二、C++现代特性准备"></a>二、C++现代特性准备</h2><p>ROS2源码使用C++11及更高版本，需要掌握以下C++新特性：</p>
+<h3 id="2-1-自动类型推导（auto）"><a href="#2-1-自动类型推导（auto）" class="headerlink" title="2.1 自动类型推导（auto）"></a>2.1 自动类型推导（auto）</h3><p>auto是一种语法糖，告诉编译器根据初始化表达式自动推导变量的类型。在编译阶段，编译器会将auto替换为推导出的实际类型。</p>
+<p>不使用auto的写法：std::vector<int>::iterator it &#x3D; vec.begin();</p>
+<p>使用auto的写法：auto it &#x3D; vec.begin();  &#x2F;&#x2F; 编译器自动推导为std::vector<int>::iterator</p>
+<h3 id="2-2-智能指针"><a href="#2-2-智能指针" class="headerlink" title="2.2 智能指针"></a>2.2 智能指针</h3><p>智能指针用于管理动态分配的内存，避免内存泄漏和空指针问题。</p>
+<p><strong>std::shared_ptr（共享指针）</strong>：</p>
+<ul>
+<li>记录指向同一个资源的指针数量</li>
+<li>当数量为0时自动释放内存</li>
+<li>使用std::make_shared创建可以一次分配对象和控制块内存，效率更高</li>
+</ul>
+<p>创建方式：</p>
+<ul>
+<li>std::shared_ptr<Widget> sp1 &#x3D; p; 或 std::shared_ptr<Widget> sp1(new Widget());</li>
+<li>auto sp1 &#x3D; std::make_shared<Widget>();  &#x2F;&#x2F; 推荐方式</li>
+</ul>
+<p>常用方法：</p>
+<ul>
+<li>use_count()：返回引用计数</li>
+<li>get()：返回指向的内存地址</li>
+<li>reset()：释放指针</li>
+</ul>
+<p><strong>std::unique_ptr</strong>：独占型指针，不能被复制<br><strong>std::weak_ptr</strong>：弱引用指针，配合shared_ptr使用</p>
+<h3 id="2-3-Lambda表达式（匿名函数）"><a href="#2-3-Lambda表达式（匿名函数）" class="headerlink" title="2.3 Lambda表达式（匿名函数）"></a>2.3 Lambda表达式（匿名函数）</h3><p>语法格式：[capture_list] (parameters) -&gt; return_type { function_body }</p>
+<p>捕获方式：</p>
+<ul>
+<li>[x]：按值捕获变量x，只读</li>
+<li>[&amp;x]：按引用捕获变量x，可修改</li>
+<li>[&#x3D;]：按值捕获所有外部变量</li>
+<li>[&amp;]：按引用捕获所有外部变量</li>
+<li>[&#x3D;, &amp;x]：混合捕获，x按引用，其他按值</li>
+</ul>
+<p>应用场景：</p>
+<ul>
+<li>简化函数对象的定义</li>
+<li>实现回调函数</li>
+</ul>
+<h3 id="2-4-函数包装器（std-function）"><a href="#2-4-函数包装器（std-function）" class="headerlink" title="2.4 函数包装器（std::function）"></a>2.4 函数包装器（std::function）</h3><p>std::function是C++11引入的通用函数包装器，用于存储、传递和调用任何可调用对象（普通函数、Lambda表达式、函数对象、成员函数等）。</p>
+<p>语法：std::function&lt;返回值类型(参数类型1, 参数类型2, …)&gt;</p>
+<p>适用场景：</p>
+<ul>
+<li>存储和传递函数、Lambda表达式、函数对象</li>
+<li>实现回调机制</li>
+<li>处理复杂的函数绑定和调用</li>
+</ul>
+<h3 id="2-5-参数绑定（std-bind）"><a href="#2-5-参数绑定（std-bind）" class="headerlink" title="2.5 参数绑定（std::bind）"></a>2.5 参数绑定（std::bind）</h3><p>std::bind用于将可调用对象与其参数绑定，生成一个新的可调用对象。可以部分绑定参数、重新排列参数顺序，或者绑定成员函数到对象实例。</p>
+<p>占位符：std::placeholders::_1、std::placeholders::_2等</p>
+<p><strong>std::function与std::bind的区别</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>std::function</th>
+<th>std::bind</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>功能重点</td>
+<td>存储和传递可调用对象</td>
+<td>绑定可调用对象的参数，创建新的可调用对象</td>
+</tr>
+<tr>
+<td>使用场景</td>
+<td>回调机制、事件处理</td>
+<td>预先绑定部分参数或调整参数顺序</td>
+</tr>
+<tr>
+<td>返回值</td>
+<td>类模板，封装可调用对象</td>
+<td>函数模板，返回新的可调用对象</td>
+</tr>
+</tbody></table>
+<h3 id="2-6-异步操作（std-future）"><a href="#2-6-异步操作（std-future）" class="headerlink" title="2.6 异步操作（std::future）"></a>2.6 异步操作（std::future）</h3><p>std::future用于表示异步操作的结果，通常与std::async、std::promise或std::packaged_task一起使用。</p>
+<p>常用方法：</p>
+<ul>
+<li>get()：获取异步操作结果（阻塞直到结果可用）</li>
+<li>valid()：检查是否关联了有效的共享状态</li>
+<li>wait()：阻塞直到结果可用</li>
+<li>wait_for()：阻塞一段时间等待结果</li>
+<li>wait_until()：阻塞直到某个时间点</li>
+</ul>
+<h3 id="2-7-线程间通信（std-promise）"><a href="#2-7-线程间通信（std-promise）" class="headerlink" title="2.7 线程间通信（std::promise）"></a>2.7 线程间通信（std::promise）</h3><p>std::promise用于在多线程编程中存储一个值或异常，并通过std::future获取该值或异常。它提供了一种线程间通信的机制，允许一个线程设置值，另一个线程获取值。</p>
+<p>核心功能：</p>
+<ul>
+<li>set_value()：设置一个值</li>
+<li>set_exception()：设置一个异常</li>
+<li>get_future()：返回std::future对象</li>
+</ul>
+<p>std::promise和std::future是一对一的通信机制。</p>
+<h3 id="2-8-面向对象技术"><a href="#2-8-面向对象技术" class="headerlink" title="2.8 面向对象技术"></a>2.8 面向对象技术</h3><p>使用面向对象技术进行程序设计，例如使用Pimpl（Pointer to Implementation）惯用法隐藏实现细节：</p>
+<p>头文件中声明接口类和一个指向实现类的指针，实现类中封装具体实现细节。这种设计可以：</p>
+<ul>
+<li>减少编译依赖</li>
+<li>隐藏实现细节</li>
+<li>提高编译速度</li>
+</ul>
+<hr>
+<h2 id="三、ROS2核心概念"><a href="#三、ROS2核心概念" class="headerlink" title="三、ROS2核心概念"></a>三、ROS2核心概念</h2><h3 id="3-1-工作空间（Workspace）"><a href="#3-1-工作空间（Workspace）" class="headerlink" title="3.1 工作空间（Workspace）"></a>3.1 工作空间（Workspace）</h3><p>工作空间是一个包含多个功能包的顶层目录，是ROS2项目开发的根环境。</p>
+<p><strong>目录结构</strong>：</p>
+<ul>
+<li>src&#x2F;：存放所有功能包的源代码（用户手动创建）</li>
+<li>build&#x2F;：编译过程中生成的中间文件（由colcon自动生成）</li>
+<li>install&#x2F;：编译后安装的可执行文件、库、配置文件等（由colcon自动生成）</li>
+<li>log&#x2F;：编译日志和运行时日志（由colcon自动生成）</li>
+</ul>
+<p><strong>作用</strong>：</p>
+<ul>
+<li>组织代码：将多个相关的功能包集中管理</li>
+<li>隔离环境：不同项目使用独立的工作空间，避免依赖冲突</li>
+<li>统一构建：通过colcon build一次性编译工作空间内所有包</li>
+<li>环境配置：通过source install&#x2F;setup.bash将当前工作空间加入ROS2环境</li>
+</ul>
+<p><strong>创建和构建工作空间</strong>：</p>
+<p>创建工作空间：mkdir -p ~&#x2F;ros2_ws&#x2F;src</p>
+<p>构建工作空间：cd ~&#x2F;ros2_ws &amp;&amp; colcon build –symlink-install</p>
+<p>设置环境：source ~&#x2F;ros2_ws&#x2F;install&#x2F;setup.bash</p>
+<p><strong>覆盖机制（Overlay）</strong>：</p>
+<ul>
+<li>底层（underlay）：系统安装的ROS2核心包（如&#x2F;opt&#x2F;ros&#x2F;jazzy）</li>
+<li>上层（overlay）：用户创建的工作空间</li>
+<li>当source上层工作空间后，它会覆盖底层中同名的包</li>
+</ul>
+<h3 id="3-2-功能包（Package）"><a href="#3-2-功能包（Package）" class="headerlink" title="3.2 功能包（Package）"></a>3.2 功能包（Package）</h3><p>功能包是ROS2中组织软件的最小单元，可以包含一个或多个节点、库、配置文件、启动文件、数据文件等。</p>
+<p><strong>两种构建类型</strong>：</p>
+<ul>
+<li>ament_cmake：用于C++代码，使用CMake构建系统</li>
+<li>ament_python：用于纯Python代码，使用Python setuptools构建</li>
+</ul>
+<p><strong>核心配置文件</strong>：</p>
+<ul>
+<li>package.xml：包的元数据和依赖列表（名称、版本、描述、作者、许可证、依赖关系）</li>
+<li>CMakeLists.txt（C++包）或setup.py（Python包）：定义如何编译和安装包中的内容</li>
+</ul>
+<p><strong>C++包目录结构</strong>：</p>
+<ul>
+<li>include&#x2F;：头文件目录</li>
+<li>src&#x2F;：源代码目录</li>
+<li>launch&#x2F;：启动文件（可选）</li>
+<li>config&#x2F;：配置文件（可选）</li>
+</ul>
+<p><strong>Python包目录结构</strong>：</p>
+<ul>
+<li>包名目录&#x2F;：Python模块目录</li>
+<li>resource&#x2F;：资源文件（可选）</li>
+<li>test&#x2F;：测试文件（可选）</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>创建功能包：ros2 pkg create <package_name> –build-type <type> –dependencies <deps> –node-name <node_name></li>
+<li>查看所有已安装的包：ros2 pkg list</li>
+<li>查看包信息：ros2 pkg xml <package_name></li>
+</ul>
+<h3 id="3-3-节点（Node）"><a href="#3-3-节点（Node）" class="headerlink" title="3.3 节点（Node）"></a>3.3 节点（Node）</h3><p>节点是ROS2中可执行程序的一个实例，是执行具体任务的独立单元。</p>
+<p><strong>节点特点</strong>：</p>
+<ul>
+<li>功能专一：每个节点只做一件事</li>
+<li>独立运行：节点可以单独启动、停止，一个节点的崩溃不会直接影响其他节点</li>
+<li>语言无关：节点可以用C++、Python等语言编写</li>
+<li>可复用：节点可以轻松用于多个机器人项目</li>
+</ul>
+<p><strong>节点的组成</strong>：</p>
+<ul>
+<li>发布者（Publisher）：向某个话题发送消息</li>
+<li>订阅者（Subscriber）：从某个话题接收消息并调用回调函数</li>
+<li>服务端&#x2F;客户端（Service Server&#x2F;Client）：提供或调用同步请求-响应服务</li>
+<li>动作服务器&#x2F;客户端（Action Server&#x2F;Client）：处理长时间任务并提供反馈</li>
+<li>定时器（Timer）：周期性地执行回调函数</li>
+<li>参数（Parameter）：可动态配置的变量</li>
+</ul>
+<p><strong>节点类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>标准节点（非可组合）</td>
+<td>独立进程，隔离性好</td>
+<td>节点间依赖少，崩溃不影响其他节点</td>
+</tr>
+<tr>
+<td>可组合节点（组件）</td>
+<td>多节点共享进程，零拷贝通信</td>
+<td>节点间频繁通信，资源受限环境</td>
+</tr>
+<tr>
+<td>生命周期节点（托管节点）</td>
+<td>内置状态机，可控启动&#x2F;关闭</td>
+<td>需要精细生命周期管理的工业应用</td>
+</tr>
+</tbody></table>
+<p><strong>生命周期节点状态</strong>：</p>
+<ul>
+<li>Unconfigured（未配置）：节点刚被实例化，未分配资源</li>
+<li>Inactive（非活跃）：节点已持有资源，但不收发数据</li>
+<li>Active（活跃）：节点正常执行业务功能</li>
+<li>Finalized（已终止）：终态，节点将被销毁</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>运行节点：ros2 run <package_name> <executable_name></li>
+<li>列出正在运行的节点：ros2 node list</li>
+<li>查看节点详细信息：ros2 node info <node_name></li>
+<li>重映射节点名称：ros2 run <pkg> <exec> –ros-args -r __node:&#x3D;new_name</li>
+</ul>
+<h3 id="3-4-话题（Topic）"><a href="#3-4-话题（Topic）" class="headerlink" title="3.4 话题（Topic）"></a>3.4 话题（Topic）</h3><p>话题是节点间异步、单向的通信机制，基于发布-订阅模型。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>异步通信：发布者发送数据后不等待接收者</li>
+<li>一对多：一个发布者可以有多个订阅者</li>
+<li>多对多：多个发布者可以发布同一话题</li>
+</ul>
+<p><strong>QoS配置</strong>：</p>
+<ul>
+<li>可靠性：Reliable（确保送达）&#x2F; Best-Effort（尽力而为）</li>
+<li>持久性：Volatile（不保留历史）&#x2F; Transient Local（为后订阅者保留数据）</li>
+<li>历史记录：Keep Last（保留最近N条）&#x2F; Keep All（保留所有）</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>查看话题列表：ros2 topic list</li>
+<li>查看话题消息类型：ros2 topic list -t</li>
+<li>打印话题消息：ros2 topic echo &#x2F;topic_name</li>
+<li>手动发布消息：ros2 topic pub &#x2F;topic_name msg_type “{data: value}”</li>
+<li>查看话题信息（含QoS）：ros2 topic info &#x2F;topic_name -v</li>
+</ul>
+<h3 id="3-5-服务（Service）"><a href="#3-5-服务（Service）" class="headerlink" title="3.5 服务（Service）"></a>3.5 服务（Service）</h3><p>服务是同步、双向的请求-响应通信机制。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>同步阻塞：客户端发送请求后等待响应</li>
+<li>一对一：一个请求对应一个响应</li>
+<li>适用于短时任务（查询状态、触发操作）</li>
+</ul>
+<p><strong>服务接口文件（.srv）结构</strong>：</p>
+<ul>
+<li>请求部分（—上方）：客户端发送的数据</li>
+<li>响应部分（—下方）：服务端返回的数据</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>列出所有可用服务：ros2 service list</li>
+<li>查看服务信息：ros2 service info <service_name></li>
+<li>查看服务类型：ros2 service type <service_name></li>
+<li>查找指定类型的服务：ros2 service find <type></li>
+<li>手动调用服务：ros2 service call <name> <type> “<data>“</li>
+</ul>
+<h3 id="3-6-动作（Action）"><a href="#3-6-动作（Action）" class="headerlink" title="3.6 动作（Action）"></a>3.6 动作（Action）</h3><p>动作是用于长时间运行任务的通信机制，结合了话题和服务的特点。</p>
+<p><strong>三部分结构</strong>：</p>
+<ul>
+<li>目标（Goal）：客户端发送的任务请求</li>
+<li>反馈（Feedback）：服务端执行过程中的进度信息</li>
+<li>结果（Result）：任务完成后的最终结果</li>
+</ul>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>异步通信：客户端发送目标后立即返回</li>
+<li>可取消：客户端可以在执行过程中取消任务</li>
+<li>可反馈：服务端可以周期性地发送进度反馈</li>
+<li>适用于导航、机械臂控制等耗时任务</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>列出所有可用动作：ros2 action list</li>
+<li>查看动作信息：ros2 action info <action_name></li>
+<li>查看动作类型：ros2 action type <action_name></li>
+<li>发送动作目标：ros2 action send_goal <name> <type> “<values>“ –feedback</li>
+</ul>
+<h3 id="3-7-参数（Parameter）"><a href="#3-7-参数（Parameter）" class="headerlink" title="3.7 参数（Parameter）"></a>3.7 参数（Parameter）</h3><p>参数是节点的配置变量，每个参数由键（参数名）和值组成。</p>
+<p><strong>参数类型</strong>：</p>
+<ul>
+<li>bool、int64、float64、string</li>
+<li>byte[]、bool[]、int64[]、float64[]、string[]</li>
+</ul>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>可动态修改：节点运行时可以实时调整参数</li>
+<li>可监控变化：节点可以注册回调函数，在参数改变时执行相应操作</li>
+<li>类型安全：每个参数有固定类型</li>
+</ul>
+<p><strong>参数回调机制</strong>：</p>
+<ul>
+<li>预设置回调：在参数实际更改前被调用，可以验证新值并决定是否接受更改</li>
+<li>参数事件回调：参数成功更改后触发事件，可以被其他节点订阅</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>列出所有节点的参数：ros2 param list</li>
+<li>获取参数值：ros2 param get &#x2F;node_name param_name</li>
+<li>设置参数值：ros2 param set &#x2F;node_name param_name value</li>
+<li>保存参数到文件：ros2 param dump &#x2F;node_name &gt; file.yaml</li>
+<li>从文件加载参数：ros2 param load &#x2F;node_name file.yaml</li>
+</ul>
+<h3 id="3-8-启动文件（Launch-File）"><a href="#3-8-启动文件（Launch-File）" class="headerlink" title="3.8 启动文件（Launch File）"></a>3.8 启动文件（Launch File）</h3><p>启动文件用于一次性启动多个ROS节点，并配置参数。</p>
+<p><strong>文件格式</strong>：</p>
+<ul>
+<li>Python（推荐）：*.launch.py</li>
+<li>XML：*.launch.xml</li>
+<li>YAML：*.launch.yaml</li>
+</ul>
+<p><strong>Python启动文件模板</strong>：</p>
+<p>from launch import LaunchDescription<br>from launch_ros.actions import Node</p>
+<p>def generate_launch_description():<br>    node1 &#x3D; Node(package&#x3D;”pkg_name”, executable&#x3D;”exec_name”, name&#x3D;”node_name”)<br>    node2 &#x3D; Node(package&#x3D;”pkg_name”, executable&#x3D;”exec_name”, name&#x3D;”node_name”)<br>    return LaunchDescription([node1, node2])</p>
+<p><strong>Node参数说明</strong>：</p>
+<ul>
+<li>package：节点所在的ROS2包名</li>
+<li>executable：可执行文件名称</li>
+<li>name：节点名称（可选）</li>
+<li>namespace：命名空间</li>
+<li>parameters：参数设置（YAML文件或字典）</li>
+<li>remappings：话题重映射</li>
+<li>output：输出方式（screen&#x2F;log）</li>
+<li>arguments：命令行参数</li>
+<li>ros_arguments：ROS2特定参数</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>启动launch文件：ros2 launch pkg_name launch_file_name.py</li>
+</ul>
+<hr>
+<h2 id="四、ROS2通信机制深入"><a href="#四、ROS2通信机制深入" class="headerlink" title="四、ROS2通信机制深入"></a>四、ROS2通信机制深入</h2><h3 id="4-1-发布-订阅模式实现"><a href="#4-1-发布-订阅模式实现" class="headerlink" title="4.1 发布-订阅模式实现"></a>4.1 发布-订阅模式实现</h3><p><strong>C++发布者核心实现</strong>：</p>
+<ol>
+<li>创建发布者：使用create_publisher模板函数，指定消息类型、话题名称和QoS配置</li>
+<li>创建定时器：使用create_wall_timer，结合std::bind将回调函数绑定到当前对象</li>
+<li>发布消息：填充消息对象后，通过发布者指针调用publish</li>
+</ol>
+<p><strong>C++订阅者核心实现</strong>：</p>
+<ol>
+<li>创建订阅者：使用create_subscription模板函数，指定消息类型、话题名称、QoS配置和回调函数</li>
+<li>实现回调函数：处理接收到的消息</li>
+</ol>
+<p><strong>Python发布者核心实现</strong>：</p>
+<ol>
+<li>创建发布者：在节点的__init__方法中使用self.create_publisher()</li>
+<li>创建定时器：使用self.create_timer()，指定时间间隔和回调函数</li>
+<li>发布消息：实例化消息对象，填充数据，调用publish()</li>
+</ol>
+<p><strong>Python订阅者核心实现</strong>：</p>
+<ol>
+<li>创建订阅者：使用self.create_subscription()，指定消息类型、话题名称、回调函数和QoS配置</li>
+<li>实现回调函数：当新消息到达时自动调用</li>
+</ol>
+<h3 id="4-2-服务通信模式实现"><a href="#4-2-服务通信模式实现" class="headerlink" title="4.2 服务通信模式实现"></a>4.2 服务通信模式实现</h3><p><strong>服务接口文件（.srv）示例</strong>：</p>
+<h2 id="int64-aint64-b"><a href="#int64-aint64-b" class="headerlink" title="int64 aint64 b"></a>int64 a<br>int64 b</h2><p>int64 sum</p>
+<p>经过编译后，会生成三个C++类：</p>
+<ul>
+<li>顶层类AddTwoInts：容器类，内部嵌套Request和Response</li>
+<li>AddTwoInts::Request类：对应请求部分</li>
+<li>AddTwoInts::Response类：对应响应部分</li>
+</ul>
+<p><strong>C++服务端要点</strong>：</p>
+<ul>
+<li>create_service是模板函数，需指定服务类型</li>
+<li>回调函数使用std::bind绑定成员函数，占位符_1和_2分别代表请求和响应</li>
+<li>请求和响应通过智能指针传递，回调中直接修改response即可</li>
+</ul>
+<p><strong>C++客户端要点</strong>：</p>
+<ul>
+<li>create_client创建客户端</li>
+<li>wait_for_service等待服务可用</li>
+<li>async_send_request异步发送请求，返回SharedFuture</li>
+<li>可通过回调函数或future.get()获取响应</li>
+</ul>
+<h3 id="4-3-动作通信模式实现"><a href="#4-3-动作通信模式实现" class="headerlink" title="4.3 动作通信模式实现"></a>4.3 动作通信模式实现</h3><p><strong>动作接口文件（.action）示例</strong>：</p>
+<h1 id="目标部分"><a href="#目标部分" class="headerlink" title="目标部分"></a>目标部分</h1><h2 id="int64-num"><a href="#int64-num" class="headerlink" title="int64 num"></a>int64 num</h2><h1 id="结果部分"><a href="#结果部分" class="headerlink" title="结果部分"></a>结果部分</h1><h2 id="int64-sum"><a href="#int64-sum" class="headerlink" title="int64 sum"></a>int64 sum</h2><h1 id="反馈部分"><a href="#反馈部分" class="headerlink" title="反馈部分"></a>反馈部分</h1><p>float progress</p>
+<p><strong>C++动作服务器要点</strong>：</p>
+<ul>
+<li>使用rclcpp_action::create_server创建动作服务器</li>
+<li>需要三个回调函数：处理目标（handle_goal）、处理取消（handle_cancel）、处理接受（handle_accepted）</li>
+<li>在执行函数中通过goal_handle-&gt;publish_feedback()发布反馈</li>
+<li>通过goal_handle-&gt;succeed()&#x2F;abort()&#x2F;canceled()设置结果</li>
+</ul>
+<p><strong>C++动作客户端要点</strong>：</p>
+<ul>
+<li>使用rclcpp_action::create_client创建动作客户端</li>
+<li>async_send_goal异步发送目标</li>
+<li>可设置goal_response_callback、feedback_callback、result_callback</li>
+</ul>
+<h3 id="4-4-三种通信机制对比"><a href="#4-4-三种通信机制对比" class="headerlink" title="4.4 三种通信机制对比"></a>4.4 三种通信机制对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>话题（Topic）</th>
+<th>服务（Service）</th>
+<th>动作（Action）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通信模式</td>
+<td>发布&#x2F;订阅（异步）</td>
+<td>请求&#x2F;响应（同步）</td>
+<td>目标&#x2F;反馈&#x2F;结果（异步长时）</td>
+</tr>
+<tr>
+<td>通信方向</td>
+<td>单向数据流</td>
+<td>双向（一次请求，一次响应）</td>
+<td>双向（可多次反馈）</td>
+</tr>
+<tr>
+<td>阻塞特性</td>
+<td>非阻塞</td>
+<td>客户端阻塞等待响应</td>
+<td>非阻塞，可取消</td>
+</tr>
+<tr>
+<td>节点关系</td>
+<td>一对多，多对多</td>
+<td>一对一</td>
+<td>一对一</td>
+</tr>
+<tr>
+<td>典型应用</td>
+<td>传感器数据、周期性指令</td>
+<td>查询状态、触发短时任务</td>
+<td>导航、机械臂控制</td>
+</tr>
+<tr>
+<td>接口文件</td>
+<td>.msg</td>
+<td>.srv</td>
+<td>.action</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、服务质量（QoS）与分布式通信"><a href="#五、服务质量（QoS）与分布式通信" class="headerlink" title="五、服务质量（QoS）与分布式通信"></a>五、服务质量（QoS）与分布式通信</h2><h3 id="5-1-QoS策略"><a href="#5-1-QoS策略" class="headerlink" title="5.1 QoS策略"></a>5.1 QoS策略</h3><p>QoS（Quality of Service）是一套用于定义和衡量数据分发服务质量的参数的集合。</p>
+<p><strong>核心QoS策略</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>说明</th>
+<th>可选值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>可靠性（Reliability）</td>
+<td>控制消息送达保证</td>
+<td>Reliable（确保送达）&#x2F; Best-Effort（尽力而为）</td>
+</tr>
+<tr>
+<td>持久性（Durability）</td>
+<td>新订阅者能否收到历史消息</td>
+<td>Volatile（不保留）&#x2F; Transient Local（保留）</td>
+</tr>
+<tr>
+<td>历史记录（History）</td>
+<td>存储多少消息</td>
+<td>Keep Last（保留最近N条）&#x2F; Keep All（保留所有）</td>
+</tr>
+<tr>
+<td>深度（Depth）</td>
+<td>队列最大消息数</td>
+<td>整数值</td>
+</tr>
+<tr>
+<td>截止时间（Deadline）</td>
+<td>消息送达时间要求</td>
+<td>毫秒值</td>
+</tr>
+<tr>
+<td>活跃度（Liveliness）</td>
+<td>节点存活状态</td>
+<td>Automatic（自动）&#x2F; Manual（手动）</td>
+</tr>
+<tr>
+<td>生存时间（Lifespan）</td>
+<td>消息有效时长</td>
+<td>时长值</td>
+</tr>
+<tr>
+<td>所有权（Ownership）</td>
+<td>发布者独占性</td>
+<td>Shared（共享）&#x2F; Exclusive（独占）</td>
+</tr>
+</tbody></table>
+<p><strong>预定义QoS配置</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>配置常量</th>
+<th>历史</th>
+<th>深度</th>
+<th>可靠性</th>
+<th>持久性</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sensor_data</td>
+<td>Keep Last</td>
+<td>5</td>
+<td>Best Effort</td>
+<td>Volatile</td>
+<td>传感器数据</td>
+</tr>
+<tr>
+<td>parameters</td>
+<td>Keep Last</td>
+<td>1000</td>
+<td>Reliable</td>
+<td>Volatile</td>
+<td>节点参数</td>
+</tr>
+<tr>
+<td>default</td>
+<td>Keep Last</td>
+<td>10</td>
+<td>Reliable</td>
+<td>Volatile</td>
+<td>通用配置</td>
+</tr>
+<tr>
+<td>services_default</td>
+<td>Keep Last</td>
+<td>10</td>
+<td>Reliable</td>
+<td>Volatile</td>
+<td>服务通信</td>
+</tr>
+</tbody></table>
+<p><strong>QoS兼容性原则</strong>：订阅者的QoS策略不高于发布者的QoS策略时，两者才能成功建立连接。</p>
+<h3 id="5-2-分布式通信"><a href="#5-2-分布式通信" class="headerlink" title="5.2 分布式通信"></a>5.2 分布式通信</h3><p>ROS2通过DDS的域ID机制实现分布式通信。</p>
+<p><strong>ROS_DOMAIN_ID</strong>：</p>
+<ul>
+<li>域是虚拟通信网络，只有同一域中的节点才能相互发现和交换数据</li>
+<li>默认域ID为0</li>
+<li>取值范围：0-255（实际限制）</li>
+</ul>
+<p><strong>设置域ID的方法</strong>：</p>
+<ol>
+<li>环境变量（最常用）：export ROS_DOMAIN_ID&#x3D;42</li>
+<li>命令行临时指定：ROS_DOMAIN_ID&#x3D;42 ros2 run my_package my_node</li>
+<li>在代码中设置：options.context()-&gt;set_domain_id(42)</li>
+<li>通过launch文件设置：SetEnvironmentVariable(‘ROS_DOMAIN_ID’, ‘42’)</li>
+</ol>
+<hr>
+<h2 id="六、机器人建模与仿真"><a href="#六、机器人建模与仿真" class="headerlink" title="六、机器人建模与仿真"></a>六、机器人建模与仿真</h2><h3 id="6-1-URDF（统一机器人描述格式）"><a href="#6-1-URDF（统一机器人描述格式）" class="headerlink" title="6.1 URDF（统一机器人描述格式）"></a>6.1 URDF（统一机器人描述格式）</h3><p>URDF是使用XML格式描述机器人结构的文件。</p>
+<p><strong>核心标签</strong>：</p>
+<ul>
+<li>robot：根标签，包含机器人模型的所有定义</li>
+<li>link：连杆标签，描述机器人的刚性部件（底盘、轮子、摄像头等）</li>
+<li>joint：关节标签，描述两个连杆之间的连接关系</li>
+</ul>
+<p><strong>link标签的子标签</strong>：</p>
+<ul>
+<li>visual：描述外观（形状、尺寸、颜色）</li>
+<li>collision：碰撞属性（碰撞检测的依据）</li>
+<li>inertial：惯性矩阵（力学仿真计算的基础）</li>
+</ul>
+<p><strong>joint标签的属性</strong>：</p>
+<ul>
+<li>name：关节名称</li>
+<li>type：关节类型（continuous、revolute、prismatic、fixed等）</li>
+</ul>
+<p><strong>joint标签的子标签</strong>：</p>
+<ul>
+<li>parent：父级连杆</li>
+<li>child：子级连杆</li>
+<li>origin：偏移量和姿态</li>
+<li>axis：围绕哪个关节轴运动</li>
+</ul>
+<p><strong>关节类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>continuous</td>
+<td>旋转关节，可无限旋转</td>
+</tr>
+<tr>
+<td>revolute</td>
+<td>旋转关节，有角度限制</td>
+</tr>
+<tr>
+<td>prismatic</td>
+<td>滑动关节，沿轴线移动</td>
+</tr>
+<tr>
+<td>fixed</td>
+<td>固定关节，不允许运动</td>
+</tr>
+<tr>
+<td>floating</td>
+<td>浮动关节，允许平移和旋转</td>
+</tr>
+<tr>
+<td>planer</td>
+<td>平面关节，在平面内运动</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-Xacro（XML宏语言）"><a href="#6-2-Xacro（XML宏语言）" class="headerlink" title="6.2 Xacro（XML宏语言）"></a>6.2 Xacro（XML宏语言）</h3><p>Xacro是URDF的优化方案，提供了编程能力。</p>
+<p><strong>主要特性</strong>：</p>
+<ul>
+<li>变量声明：&lt;xacro:property name&#x3D;”radius” value&#x3D;”0.1” &#x2F;&gt;</li>
+<li>数学运算：${radius * 2}</li>
+<li>宏定义：&lt;xacro:macro name&#x3D;”wheel_func” params&#x3D;”name flag”&gt;</li>
+<li>宏调用：&lt;xacro:wheel_func name&#x3D;”left” flag&#x3D;”1” &#x2F;&gt;</li>
+<li>文件包含：&lt;xacro:include filename&#x3D;”base.xacro” &#x2F;&gt;</li>
+</ul>
+<p><strong>优势</strong>：</p>
+<ul>
+<li>代码复用，避免重复</li>
+<li>支持数学运算，避免手动计算错误</li>
+<li>提高代码可读性和维护性</li>
+</ul>
+<h3 id="6-3-Gazebo仿真"><a href="#6-3-Gazebo仿真" class="headerlink" title="6.3 Gazebo仿真"></a>6.3 Gazebo仿真</h3><p>Gazebo是3D动态模拟器，用于显示机器人模型并创建仿真环境。</p>
+<p><strong>Gazebo版本</strong>：</p>
+<ul>
+<li>Gazebo Classic：旧版本，将于2025年停止支持</li>
+<li>Gazebo Sim（原Ignition）：新版本，模块化架构</li>
+</ul>
+<p><strong>URDF集成Gazebo的额外配置</strong>：</p>
+<ol>
+<li>添加collision标签：碰撞检测依据</li>
+<li>添加inertial标签：惯性矩阵，用于力学计算</li>
+<li>重新设置材质：使用Gazebo特定颜色标签</li>
+</ol>
+<p><strong>惯性矩阵计算公式</strong>：</p>
+<ul>
+<li>球体：I &#x3D; 2&#x2F;5 * m * r^2</li>
+<li>圆柱：Ixx &#x3D; Iyy &#x3D; m*(3<em>r^2 + h^2)&#x2F;12, Izz &#x3D; m</em>r^2&#x2F;2</li>
+<li>立方体：Ixx &#x3D; m*(h^2 + l^2)&#x2F;12, Iyy &#x3D; m*(w^2 + l^2)&#x2F;12, Izz &#x3D; m*(w^2 + h^2)&#x2F;12</li>
+</ul>
+<p><strong>常用Gazebo插件</strong>：</p>
+<ul>
+<li>gz-sim-physics-system：物理参数定义</li>
+<li>gz-sim-diff-drive-system：差速驱动控制</li>
+<li>gz-sim-sensors-system：传感器仿真</li>
+</ul>
+<h3 id="6-4-RViz2可视化"><a href="#6-4-RViz2可视化" class="headerlink" title="6.4 RViz2可视化"></a>6.4 RViz2可视化</h3><p>RViz2是ROS的三维可视化工具。</p>
+<p><strong>主要功能</strong>：</p>
+<ul>
+<li>显示机器人模型</li>
+<li>显示激光雷达数据</li>
+<li>显示点云数据</li>
+<li>显示相机图像</li>
+<li>显示坐标变换（TF）</li>
+</ul>
+<hr>
+<h2 id="七、坐标变换TF2"><a href="#七、坐标变换TF2" class="headerlink" title="七、坐标变换TF2"></a>七、坐标变换TF2</h2><h3 id="7-1-基本概念"><a href="#7-1-基本概念" class="headerlink" title="7.1 基本概念"></a>7.1 基本概念</h3><p>TF2是ROS中用于管理和处理不同坐标系之间变换关系的核心库。</p>
+<p><strong>核心概念</strong>：</p>
+<ul>
+<li>坐标系（Frame）：三维空间中的参考系</li>
+<li>变换（Transform）：两个坐标系之间的相对位置和姿态关系</li>
+<li>变换树（Transform Tree）：所有坐标系及其变换关系组成的树形结构</li>
+<li>时间戳：所有变换关联时间戳，支持历史查询</li>
+</ul>
+<h3 id="7-2-坐标变换消息类型"><a href="#7-2-坐标变换消息类型" class="headerlink" title="7.2 坐标变换消息类型"></a>7.2 坐标变换消息类型</h3><p><strong>TransformStamped</strong>：用于传输坐标系相对位置信息</p>
+<ul>
+<li>header：头信息（时间戳、坐标系ID）</li>
+<li>child_frame_id：子坐标系ID</li>
+<li>transform：坐标信息（平移向量、四元数旋转）</li>
+</ul>
+<p><strong>PointStamped</strong>：用于传输某个坐标系内的坐标点信息</p>
+<ul>
+<li>header：头信息</li>
+<li>point：点坐标（x, y, z）</li>
+</ul>
+<h3 id="7-3-静态坐标变换"><a href="#7-3-静态坐标变换" class="headerlink" title="7.3 静态坐标变换"></a>7.3 静态坐标变换</h3><p>适用于两个坐标系之间的相对位置固定不变的场景（如雷达&#x2F;摄像头相对于底盘）。</p>
+<p><strong>发布方式</strong>：</p>
+<ul>
+<li>编码方式：创建StaticTransformBroadcaster，组织并发布TransformStamped消息</li>
+<li>命令行方式：ros2 run tf2_ros static_transform_publisher –x X –y Y –z Z –roll roll –pitch pitch –yaw yaw –frame-id frame_id –child-frame-id child_frame_id</li>
+</ul>
+<h3 id="7-4-动态坐标变换"><a href="#7-4-动态坐标变换" class="headerlink" title="7.4 动态坐标变换"></a>7.4 动态坐标变换</h3><p>适用于两个坐标系之间的相对位置动态变化的场景（如机械臂关节、多车编队）。</p>
+<p><strong>实现要点</strong>：</p>
+<ul>
+<li>创建TransformBroadcaster</li>
+<li>订阅位姿话题，获取当前位置</li>
+<li>根据订阅到的位姿生成坐标帧并广播</li>
+</ul>
+<h3 id="7-5-坐标变换监听"><a href="#7-5-坐标变换监听" class="headerlink" title="7.5 坐标变换监听"></a>7.5 坐标变换监听</h3><p><strong>核心类</strong>：</p>
+<ul>
+<li>tf2_ros::Buffer：存储坐标系变换信息的缓存区</li>
+<li>tf2_ros::TransformListener：订阅tf话题，将接收到的变换信息存储到Buffer中</li>
+</ul>
+<p><strong>常用函数</strong>：</p>
+<ul>
+<li>lookup_transform：查找两个坐标系之间的变换关系</li>
+<li>can_transform：等待变换可用</li>
+<li>transform：将坐标点从一个坐标系转换到另一个坐标系</li>
+</ul>
+<h3 id="7-6-TF2工具"><a href="#7-6-TF2工具" class="headerlink" title="7.6 TF2工具"></a>7.6 TF2工具</h3><ul>
+<li>static_transform_publisher：广播静态坐标变换</li>
+<li>tf2_monitor：打印坐标系的发布频率与网络延迟</li>
+<li>tf2_echo：显示特定坐标系的变换关系</li>
+<li>view_frames：将坐标系的变换关系生成PDF文档</li>
+</ul>
+<hr>
+<h2 id="八、机器人感知"><a href="#八、机器人感知" class="headerlink" title="八、机器人感知"></a>八、机器人感知</h2><h3 id="8-1-相机"><a href="#8-1-相机" class="headerlink" title="8.1 相机"></a>8.1 相机</h3><p><strong>相机类型</strong>：</p>
+<ul>
+<li>USB摄像头（UVC相机）：即插即用，使用usb_cam功能包驱动</li>
+<li>深度相机（RGB-D）：提供彩色图像和深度信息（Intel RealSense、Kinect等）</li>
+</ul>
+<p><strong>ROS2中的图像消息类型（sensor_msgs&#x2F;Image）</strong>：</p>
+<ul>
+<li>header：时间戳和坐标系</li>
+<li>height&#x2F;width：图像高度和宽度</li>
+<li>encoding：编码格式（RGB、YUV等）</li>
+<li>step：一行图像数据的字节数量</li>
+<li>data：存储图像数据的数组</li>
+</ul>
+<p><strong>压缩图像消息类型（sensor_msgs&#x2F;CompressedImage）</strong>：</p>
+<ul>
+<li>format：压缩格式（jpeg、png、tiff）</li>
+<li>data：压缩图像数据</li>
+</ul>
+<h3 id="8-2-摄像头标定"><a href="#8-2-摄像头标定" class="headerlink" title="8.2 摄像头标定"></a>8.2 摄像头标定</h3><p><strong>标定的目的</strong>：</p>
+<ul>
+<li>消除镜头畸变（径向畸变、切向畸变）</li>
+<li>确定相机内参（焦距、主点）</li>
+<li>建立像素点到真实世界点的映射关系</li>
+</ul>
+<p><strong>标定类型</strong>：</p>
+<ul>
+<li>内参标定：相机内部参数（焦距、主点、畸变系数）</li>
+<li>外参标定：相机与机器人坐标系之间的变换关系</li>
+</ul>
+<p><strong>标定工具</strong>：camera_calibration功能包</p>
+<p><strong>标定参数说明</strong>：</p>
+<ul>
+<li>fx&#x2F;fy：焦距（像素单位）</li>
+<li>cx&#x2F;cy：图像光心坐标</li>
+<li>k1&#x2F;k2&#x2F;k3：径向畸变系数</li>
+<li>t1&#x2F;t2：切向畸变系数</li>
+</ul>
+<h3 id="8-3-激光雷达"><a href="#8-3-激光雷达" class="headerlink" title="8.3 激光雷达"></a>8.3 激光雷达</h3><p><strong>ROS2中的激光雷达消息类型（sensor_msgs&#x2F;LaserScan）</strong>：</p>
+<ul>
+<li>angle_min&#x2F;angle_max：扫描起始&#x2F;结束角度（弧度）</li>
+<li>angle_increment：相邻激光点角度间隔</li>
+<li>range_min&#x2F;range_max：最小&#x2F;最大测距距离</li>
+<li>ranges：距离数据数组（核心数据）</li>
+<li>intensities：反射强度数据</li>
+</ul>
+<h3 id="8-4-点云数据"><a href="#8-4-点云数据" class="headerlink" title="8.4 点云数据"></a>8.4 点云数据</h3><p><strong>ROS2中的点云消息类型（sensor_msgs&#x2F;PointCloud2）</strong>：</p>
+<ul>
+<li>height&#x2F;width：点云高度和宽度（无序点云height&#x3D;1）</li>
+<li>fields：每个点的字段定义（x、y、z、intensity等）</li>
+<li>point_step：单个点占用的总字节数</li>
+<li>data：存储点云数据的二进制数组</li>
+</ul>
+<h3 id="8-5-OpenCV集成"><a href="#8-5-OpenCV集成" class="headerlink" title="8.5 OpenCV集成"></a>8.5 OpenCV集成</h3><p><strong>cv_bridge功能包</strong>：在ROS2图像消息和OpenCV图像格式（cv::Mat）之间进行转换。</p>
+<p><strong>转换方式</strong>：</p>
+<ul>
+<li>toCvCopy：深拷贝，适合需要修改数据的场景</li>
+<li>toCvShare：浅拷贝，适合只读场景</li>
+</ul>
+<p><strong>image_transport</strong>：图像传输扩展包，支持压缩传输，降低带宽占用。</p>
+<hr>
+<h2 id="九、机器人控制（ros2-control）"><a href="#九、机器人控制（ros2-control）" class="headerlink" title="九、机器人控制（ros2_control）"></a>九、机器人控制（ros2_control）</h2><h3 id="9-1-概述"><a href="#9-1-概述" class="headerlink" title="9.1 概述"></a>9.1 概述</h3><p>ros2_control是ROS2中用于机器人实时控制的核心框架。</p>
+<p><strong>作用</strong>：</p>
+<ul>
+<li>硬件抽象与解耦</li>
+<li>控制器复用</li>
+<li>仿真到实机无缝迁移</li>
+<li>实时性支持</li>
+</ul>
+<h3 id="9-2-核心组件"><a href="#9-2-核心组件" class="headerlink" title="9.2 核心组件"></a>9.2 核心组件</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>硬件组件</td>
+<td>抽象物理硬件（系统、传感器、执行器）</td>
+</tr>
+<tr>
+<td>控制器管理器</td>
+<td>核心调度中枢，管理控制器生命周期</td>
+</tr>
+<tr>
+<td>资源管理器</td>
+<td>动态加载硬件组件，管理接口</td>
+</tr>
+<tr>
+<td>硬件接口</td>
+<td>与物理硬件的直接交互层（状态接口&#x2F;命令接口）</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td>实现具体控制算法的软件模块</td>
+</tr>
+</tbody></table>
+<h3 id="9-3-硬件接口类型"><a href="#9-3-硬件接口类型" class="headerlink" title="9.3 硬件接口类型"></a>9.3 硬件接口类型</h3><ul>
+<li><strong>状态接口（State Interface）</strong>：只读，表示传感器读数</li>
+<li><strong>命令接口（Command Interface）</strong>：读写，用于向硬件下发命令（具有互斥性）</li>
+</ul>
+<h3 id="9-4-常用控制器"><a href="#9-4-常用控制器" class="headerlink" title="9.4 常用控制器"></a>9.4 常用控制器</h3><ul>
+<li>joint_state_broadcaster：读取关节状态并发布到&#x2F;joint_states</li>
+<li>diff_drive_controller：差速驱动控制器，接收&#x2F;cmd_vel输出轮速指令</li>
+<li>joint_trajectory_controller：关节轨迹跟踪控制器</li>
+</ul>
+<h3 id="9-5-常用命令行工具"><a href="#9-5-常用命令行工具" class="headerlink" title="9.5 常用命令行工具"></a>9.5 常用命令行工具</h3><ul>
+<li>列出所有已加载的控制器：ros2 control list_controllers</li>
+<li>列出硬件接口：ros2 control list_hardware_interfaces</li>
+<li>加载控制器：ros2 control load_controller <controller_name></li>
+<li>激活控制器：ros2 control switch_controllers –activate <controller_name></li>
+</ul>
+<hr>
+<h2 id="十、导航与建图（Nav2）"><a href="#十、导航与建图（Nav2）" class="headerlink" title="十、导航与建图（Nav2）"></a>十、导航与建图（Nav2）</h2><h3 id="10-1-Nav2架构"><a href="#10-1-Nav2架构" class="headerlink" title="10.1 Nav2架构"></a>10.1 Nav2架构</h3><p>Nav2是ROS2中用于移动机器人自主导航的模块化框架。</p>
+<p><strong>核心组件</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BT Navigator Server</td>
+<td>核心调度节点，使用行为树协调各模块</td>
+</tr>
+<tr>
+<td>Planner Server</td>
+<td>全局路径规划（A*、Dijkstra）</td>
+</tr>
+<tr>
+<td>Controller Server</td>
+<td>局部路径规划与运动控制（DWA、TEB）</td>
+</tr>
+<tr>
+<td>Recovery Server</td>
+<td>恢复行为（旋转、后退、重新规划）</td>
+</tr>
+<tr>
+<td>Smoother Server</td>
+<td>路径平滑优化</td>
+</tr>
+<tr>
+<td>Waypoint Follower</td>
+<td>执行路径点序列</td>
+</tr>
+</tbody></table>
+<h3 id="10-2-代价地图（Costmap）"><a href="#10-2-代价地图（Costmap）" class="headerlink" title="10.2 代价地图（Costmap）"></a>10.2 代价地图（Costmap）</h3><p>代价地图是多层叠加的地图，包含：</p>
+<ul>
+<li>Static Map Layer：SLAM构建的静态地图</li>
+<li>Obstacle Map Layer：传感器感知的障碍物信息</li>
+<li>Inflation Layer：障碍物膨胀层（设置警戒区）</li>
+</ul>
+<p><strong>两种代价地图</strong>：</p>
+<ul>
+<li>Global Costmap：覆盖整个已知环境，用于全局规划</li>
+<li>Local Costmap：以机器人中心的小范围地图，用于局部避障</li>
+</ul>
+<h3 id="10-3-SLAM-Toolbox"><a href="#10-3-SLAM-Toolbox" class="headerlink" title="10.3 SLAM Toolbox"></a>10.3 SLAM Toolbox</h3><p>用于2D SLAM建图。</p>
+<p><strong>两种模式</strong>：</p>
+<ul>
+<li>同步模式（sync）：每帧激光数据立即处理，CPU效率高，适合低速机器人</li>
+<li>异步模式（async）：数据放入队列异步处理，不丢帧，适合高速机器人</li>
+</ul>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>启动异步建图：ros2 launch slam_toolbox online_async_launch.py</li>
+<li>保存地图：ros2 run nav2_map_server map_saver_cli -f map_name</li>
+</ul>
+<h3 id="10-4-AMCL定位"><a href="#10-4-AMCL定位" class="headerlink" title="10.4 AMCL定位"></a>10.4 AMCL定位</h3><p>AMCL使用自适应蒙特卡洛定位方法，基于粒子滤波推算机器人位置。</p>
+<p><strong>粒子滤波流程</strong>：</p>
+<ol>
+<li>初始化：随机分布粒子</li>
+<li>预测：根据运动模型移动粒子</li>
+<li>更新：根据传感器测量更新粒子权重</li>
+<li>姿态估计：计算加权平均值</li>
+<li>重采样：去除权重小的粒子，复制权重大的粒子</li>
+</ol>
+<p><strong>常用命令</strong>：</p>
+<ul>
+<li>ros2 run nav2_map_server map_server：加载地图</li>
+<li>ros2 run nav2_amcl amcl：启动定位节点</li>
+</ul>
+<h3 id="10-5-常用导航命令"><a href="#10-5-常用导航命令" class="headerlink" title="10.5 常用导航命令"></a>10.5 常用导航命令</h3><ul>
+<li>查看话题列表：ros2 topic list</li>
+<li>手动发布速度指令：ros2 topic pub &#x2F;cmd_vel geometry_msgs&#x2F;msg&#x2F;Twist “{linear: {x: 0.5}, angular: {z: 0.0}}”</li>
+<li>设置初始位姿：通过Rviz的2D Pose Estimate按钮</li>
+<li>设置导航目标：通过Rviz的2D Nav Goal按钮</li>
+</ul>
+<hr>
+<h2 id="十一、行为树（Behavior-Tree）"><a href="#十一、行为树（Behavior-Tree）" class="headerlink" title="十一、行为树（Behavior Tree）"></a>十一、行为树（Behavior Tree）</h2><h3 id="11-1-基本概念"><a href="#11-1-基本概念" class="headerlink" title="11.1 基本概念"></a>11.1 基本概念</h3><p>行为树是一种用于机器人决策和控制的树状结构。</p>
+<p><strong>节点类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>控制节点</td>
+<td>定义子节点执行顺序（Sequence、Fallback、Parallel）</td>
+</tr>
+<tr>
+<td>装饰节点</td>
+<td>修改子节点行为（Inverter、ForceSuccess、Repeat）</td>
+</tr>
+<tr>
+<td>条件节点</td>
+<td>检查条件，返回Success&#x2F;Failure</td>
+</tr>
+<tr>
+<td>动作节点</td>
+<td>执行具体任务，可返回Running</td>
+</tr>
+</tbody></table>
+<p><strong>节点返回状态</strong>：</p>
+<ul>
+<li>Success：成功</li>
+<li>Failure：失败</li>
+<li>Running：执行中</li>
+</ul>
+<h3 id="11-2-行为树-vs-有限状态机"><a href="#11-2-行为树-vs-有限状态机" class="headerlink" title="11.2 行为树 vs 有限状态机"></a>11.2 行为树 vs 有限状态机</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>行为树</th>
+<th>有限状态机</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模块化</td>
+<td>易于模块化，可复用子树</td>
+<td>状态和转换耦合</td>
+</tr>
+<tr>
+<td>故障恢复</td>
+<td>内置恢复机制</td>
+<td>需手动添加转换</td>
+</tr>
+<tr>
+<td>可读性</td>
+<td>层次化结构清晰</td>
+<td>状态爆炸时难以维护</td>
+</tr>
+<tr>
+<td>动态性</td>
+<td>实时评估条件</td>
+<td>需预定义所有转换</td>
+</tr>
+</tbody></table>
+<h3 id="11-3-BehaviorTree-CPP库"><a href="#11-3-BehaviorTree-CPP库" class="headerlink" title="11.3 BehaviorTree.CPP库"></a>11.3 BehaviorTree.CPP库</h3><p><strong>核心类</strong>：</p>
+<ul>
+<li>BT::BehaviorTreeFactory：注册自定义节点，创建行为树</li>
+<li>BT::TreeNode：所有节点的基类</li>
+<li>BT::SyncActionNode：同步动作节点（阻塞执行）</li>
+<li>BT::AsyncActionNode：异步动作节点（非阻塞）</li>
+</ul>
+<p><strong>XML树定义示例</strong>：</p>
+<root BTCPP_format="4">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <CheckBattery name="check_battery"/>
+            <ApproachObject name="approach_object"/>
+            <CloseGripper name="close_gripper"/>
+        </Sequence>
+    </BehaviorTree>
+</root>
+
+<hr>
+<h2 id="十二、插件机制（pluginlib）"><a href="#十二、插件机制（pluginlib）" class="headerlink" title="十二、插件机制（pluginlib）"></a>十二、插件机制（pluginlib）</h2><h3 id="12-1-概述"><a href="#12-1-概述" class="headerlink" title="12.1 概述"></a>12.1 概述</h3><p>pluginlib是ROS2中的C++库，用于在运行时动态加载和卸载插件。</p>
+<p><strong>三层架构</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>抽象包（Interface Package）</td>
+<td>提供统一的抽象接口（纯虚基类）</td>
+</tr>
+<tr>
+<td>插件包（Plugin Package）</td>
+<td>实现基类抽象接口的具体子类</td>
+</tr>
+<tr>
+<td>应用包（Application Package）</td>
+<td>通过pluginlib动态加载和调用插件</td>
+</tr>
+</tbody></table>
+<h3 id="12-2-插件开发步骤"><a href="#12-2-插件开发步骤" class="headerlink" title="12.2 插件开发步骤"></a>12.2 插件开发步骤</h3><ol>
+<li>定义抽象接口（抽象包）</li>
+<li>实现具体插件类（插件包）</li>
+<li>使用PLUGINLIB_EXPORT_CLASS宏注册插件</li>
+<li>编写XML插件描述文件</li>
+<li>在CMakeLists.txt中配置插件导出</li>
+<li>在应用包中动态加载和使用</li>
+</ol>
+<h3 id="12-3-XML插件描述文件示例"><a href="#12-3-XML插件描述文件示例" class="headerlink" title="12.3 XML插件描述文件示例"></a>12.3 XML插件描述文件示例</h3><library path="plugin_library_name">
+    <class name="PluginName" type="namespace::PluginClass" base_class_type="BaseClass">
+        <description>Plugin description</description>
+    </class>
+</library>
+
+<h3 id="12-4-插件加载示例"><a href="#12-4-插件加载示例" class="headerlink" title="12.4 插件加载示例"></a>12.4 插件加载示例</h3><p>使用ClassLoader动态加载插件：</p>
+<p>pluginlib::ClassLoader<BaseClass> loader(“base_package”, “BaseClass”);<br>std::shared_ptr<BaseClass> plugin &#x3D; loader.createSharedInstance(“PluginName”);</p>
+<hr>
+<h2 id="十三、常用功能包与消息类型"><a href="#十三、常用功能包与消息类型" class="headerlink" title="十三、常用功能包与消息类型"></a>十三、常用功能包与消息类型</h2><h3 id="13-1-常用消息包"><a href="#13-1-常用消息包" class="headerlink" title="13.1 常用消息包"></a>13.1 常用消息包</h3><table>
+<thead>
+<tr>
+<th>功能领域</th>
+<th>包含的包</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础数据类型</td>
+<td>std_msgs, example_interfaces</td>
+</tr>
+<tr>
+<td>几何与变换</td>
+<td>geometry_msgs, tf2_msgs</td>
+</tr>
+<tr>
+<td>控制与运动</td>
+<td>control_msgs, trajectory_msgs</td>
+</tr>
+<tr>
+<td>传感器数据</td>
+<td>sensor_msgs</td>
+</tr>
+<tr>
+<td>导航与路径规划</td>
+<td>nav_msgs, nav2_msgs</td>
+</tr>
+<tr>
+<td>可视化</td>
+<td>visualization_msgs</td>
+</tr>
+</tbody></table>
+<h3 id="13-2-常用命令行工具汇总"><a href="#13-2-常用命令行工具汇总" class="headerlink" title="13.2 常用命令行工具汇总"></a>13.2 常用命令行工具汇总</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ros2 node list</td>
+<td>列出节点</td>
+</tr>
+<tr>
+<td>ros2 node info</td>
+<td>查看节点信息</td>
+</tr>
+<tr>
+<td>ros2 topic list</td>
+<td>列出话题</td>
+</tr>
+<tr>
+<td>ros2 topic echo</td>
+<td>打印话题消息</td>
+</tr>
+<tr>
+<td>ros2 topic pub</td>
+<td>发布话题消息</td>
+</tr>
+<tr>
+<td>ros2 service list</td>
+<td>列出服务</td>
+</tr>
+<tr>
+<td>ros2 service call</td>
+<td>调用服务</td>
+</tr>
+<tr>
+<td>ros2 action list</td>
+<td>列出动作</td>
+</tr>
+<tr>
+<td>ros2 action send_goal</td>
+<td>发送动作目标</td>
+</tr>
+<tr>
+<td>ros2 param list</td>
+<td>列出参数</td>
+</tr>
+<tr>
+<td>ros2 param get&#x2F;set</td>
+<td>获取&#x2F;设置参数</td>
+</tr>
+<tr>
+<td>ros2 launch</td>
+<td>启动launch文件</td>
+</tr>
+<tr>
+<td>ros2 run</td>
+<td>运行节点</td>
+</tr>
+<tr>
+<td>ros2 pkg list</td>
+<td>列出功能包</td>
+</tr>
+<tr>
+<td>ros2 pkg create</td>
+<td>创建功能包</td>
+</tr>
+<tr>
+<td>ros2 interface show</td>
+<td>查看接口定义</td>
+</tr>
+<tr>
+<td>ros2 control list_controllers</td>
+<td>列出控制器</td>
+</tr>
+<tr>
+<td>ros2 lifecycle set</td>
+<td>设置生命周期节点状态</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>核心概念</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>具身智能</td>
+<td>感知-行动闭环，依托物理身体与环境交互</td>
+</tr>
+<tr>
+<td>ROS2</td>
+<td>分布式、模块化、跨平台的机器人软件框架</td>
+</tr>
+<tr>
+<td>DDS</td>
+<td>发布-订阅模型，支持QoS配置</td>
+</tr>
+<tr>
+<td>节点</td>
+<td>执行具体任务的独立单元</td>
+</tr>
+<tr>
+<td>话题</td>
+<td>异步、单向、发布-订阅通信</td>
+</tr>
+<tr>
+<td>服务</td>
+<td>同步、双向、请求-响应通信</td>
+</tr>
+<tr>
+<td>动作</td>
+<td>支持反馈和取消的长时间任务通信</td>
+</tr>
+<tr>
+<td>参数</td>
+<td>节点配置变量，支持动态修改</td>
+</tr>
+<tr>
+<td>启动文件</td>
+<td>一次启动多节点，统一配置</td>
+</tr>
+<tr>
+<td>QoS</td>
+<td>控制通信行为（可靠性、持久性等）</td>
+</tr>
+<tr>
+<td>URDF&#x2F;Xacro</td>
+<td>机器人建模描述格式</td>
+</tr>
+<tr>
+<td>TF2</td>
+<td>坐标变换管理</td>
+</tr>
+<tr>
+<td>ros2_control</td>
+<td>机器人实时控制框架</td>
+</tr>
+<tr>
+<td>Nav2</td>
+<td>自主导航框架</td>
+</tr>
+<tr>
+<td>行为树</td>
+<td>机器人决策控制结构</td>
+</tr>
+<tr>
+<td>pluginlib</td>
+<td>运行时动态加载插件</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>💡 学习建议：先掌握C++基础特性，再理解ROS2核心概念，然后深入学习通信机制和控制框架，最后结合实际仿真和硬件进行实践。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://chebaireal.github.io">Cipher</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://chebaireal.github.io/2026/04/13/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">https://chebaireal.github.io/2026/04/13/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://chebaireal.github.io" target="_blank">Hexo</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ROS2/">ROS2</a><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E4%BA%BA/">机器人</a><a class="post-meta__tags" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/04/09/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6-1-%E7%B3%BB%E7%BB%9F%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E7%9A%84%E5%86%85%E6%B6%B5%E5%8F%8A%E8%A6%81%E7%82%B9/" title="软件架构与中间件-1_系统体系结构的内涵及要点"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">软件架构与中间件-1_系统体系结构的内涵及要点</div></div><div class="info-2"><div class="info-item-1">第一章 系统体系结构的内涵及要点1.0 系统体系结构概述什么是系统体系结构架构的一般理解：  软件架构 &#x3D; 软件的架构  词典中“架构”的定义：  设计和建造建筑物的艺术与科学 设计及构造的方式和方法 部件的有序安排与结构 计算机系统的总体设计或结构（包括硬件和软件，尤其是微处理器内部结构）  架构的起源 起源于建筑学 两个核心因素： 基本建筑模块（砖、瓦、灰、沙、石等） 模块之间的连接关系（如何组合成整体）   建筑设计三原则：坚固、实用、美观  计算机硬件系统的“架构” 基本模块：控制器、运算器、存储器、I&#x2F;O设备等 连接关系：总线 常见结构：冯·诺依曼结构、存储层次结构、并行处理、流水线、多核CPU  “架构”的共性 构件：基本构成要素 连接件：要素之间的关系 拓扑结构：物理分布 约束：限制条件 质量：性能等  软件架构（SA）定义CMU观点 目前尚无统一、被普遍接受的定义，软件架构仍是一个年轻领域。  Garlan &amp; Shaw（1994） SA &#x3D; {components, connectors, constraints}  包括：...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Cipher</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%B7%E8%BA%AB%E6%99%BA%E8%83%BD%E4%B8%8EROS%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">一、具身智能与ROS概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%B7%E8%BA%AB%E6%99%BA%E8%83%BD%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 什么是具身智能？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AFROS%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 什么是ROS？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-ROS%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 ROS预备知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-ROS1-vs-ROS2"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 ROS1 vs ROS2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-DDS%EF%BC%88%E6%95%B0%E6%8D%AE%E5%88%86%E5%8F%91%E6%9C%8D%E5%8A%A1%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 DDS（数据分发服务）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-Micro-ROS"><span class="toc-number">1.6.</span> <span class="toc-text">1.6 Micro-ROS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-7-ROS%E7%89%88%E6%9C%AC%E4%B8%8E%E6%94%AF%E6%8C%81%E5%91%A8%E6%9C%9F"><span class="toc-number">1.7.</span> <span class="toc-text">1.7 ROS版本与支持周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-8-ROS-Industrial%EF%BC%88ROS-I%EF%BC%89"><span class="toc-number">1.8.</span> <span class="toc-text">1.8 ROS-Industrial（ROS-I）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81C-%E7%8E%B0%E4%BB%A3%E7%89%B9%E6%80%A7%E5%87%86%E5%A4%87"><span class="toc-number">2.</span> <span class="toc-text">二、C++现代特性准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E8%87%AA%E5%8A%A8%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC%EF%BC%88auto%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 自动类型推导（auto）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 智能指针</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%88%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 Lambda表达式（匿名函数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%87%BD%E6%95%B0%E5%8C%85%E8%A3%85%E5%99%A8%EF%BC%88std-function%EF%BC%89"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 函数包装器（std::function）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A%EF%BC%88std-bind%EF%BC%89"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 参数绑定（std::bind）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C%EF%BC%88std-future%EF%BC%89"><span class="toc-number">2.6.</span> <span class="toc-text">2.6 异步操作（std::future）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%EF%BC%88std-promise%EF%BC%89"><span class="toc-number">2.7.</span> <span class="toc-text">2.7 线程间通信（std::promise）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E6%8A%80%E6%9C%AF"><span class="toc-number">2.8.</span> <span class="toc-text">2.8 面向对象技术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81ROS2%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.</span> <span class="toc-text">三、ROS2核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%EF%BC%88Workspace%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 工作空间（Workspace）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%8A%9F%E8%83%BD%E5%8C%85%EF%BC%88Package%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 功能包（Package）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%8A%82%E7%82%B9%EF%BC%88Node%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 节点（Node）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E8%AF%9D%E9%A2%98%EF%BC%88Topic%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 话题（Topic）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%9C%8D%E5%8A%A1%EF%BC%88Service%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 服务（Service）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%8A%A8%E4%BD%9C%EF%BC%88Action%EF%BC%89"><span class="toc-number">3.6.</span> <span class="toc-text">3.6 动作（Action）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-%E5%8F%82%E6%95%B0%EF%BC%88Parameter%EF%BC%89"><span class="toc-number">3.7.</span> <span class="toc-text">3.7 参数（Parameter）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%EF%BC%88Launch-File%EF%BC%89"><span class="toc-number">3.8.</span> <span class="toc-text">3.8 启动文件（Launch File）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81ROS2%E9%80%9A%E4%BF%A1%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%85%A5"><span class="toc-number">4.</span> <span class="toc-text">四、ROS2通信机制深入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 发布-订阅模式实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 服务通信模式实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#int64-aint64-b"><span class="toc-number">5.</span> <span class="toc-text">int64 aint64 b</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.1.</span> <span class="toc-text">4.3 动作通信模式实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%E9%83%A8%E5%88%86"><span class="toc-number">6.</span> <span class="toc-text">目标部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#int64-num"><span class="toc-number">6.1.</span> <span class="toc-text">int64 num</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E9%83%A8%E5%88%86"><span class="toc-number">7.</span> <span class="toc-text">结果部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#int64-sum"><span class="toc-number">7.1.</span> <span class="toc-text">int64 sum</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E9%A6%88%E9%83%A8%E5%88%86"><span class="toc-number">8.</span> <span class="toc-text">反馈部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E4%B8%89%E7%A7%8D%E9%80%9A%E4%BF%A1%E6%9C%BA%E5%88%B6%E5%AF%B9%E6%AF%94"><span class="toc-number">8.1.</span> <span class="toc-text">4.4 三种通信机制对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%9C%8D%E5%8A%A1%E8%B4%A8%E9%87%8F%EF%BC%88QoS%EF%BC%89%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1"><span class="toc-number">8.2.</span> <span class="toc-text">五、服务质量（QoS）与分布式通信</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-QoS%E7%AD%96%E7%95%A5"><span class="toc-number">8.2.1.</span> <span class="toc-text">5.1 QoS策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1"><span class="toc-number">8.2.2.</span> <span class="toc-text">5.2 分布式通信</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%BB%BA%E6%A8%A1%E4%B8%8E%E4%BB%BF%E7%9C%9F"><span class="toc-number">8.3.</span> <span class="toc-text">六、机器人建模与仿真</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-URDF%EF%BC%88%E7%BB%9F%E4%B8%80%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%8F%8F%E8%BF%B0%E6%A0%BC%E5%BC%8F%EF%BC%89"><span class="toc-number">8.3.1.</span> <span class="toc-text">6.1 URDF（统一机器人描述格式）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-Xacro%EF%BC%88XML%E5%AE%8F%E8%AF%AD%E8%A8%80%EF%BC%89"><span class="toc-number">8.3.2.</span> <span class="toc-text">6.2 Xacro（XML宏语言）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-Gazebo%E4%BB%BF%E7%9C%9F"><span class="toc-number">8.3.3.</span> <span class="toc-text">6.3 Gazebo仿真</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-RViz2%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">8.3.4.</span> <span class="toc-text">6.4 RViz2可视化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2TF2"><span class="toc-number">8.4.</span> <span class="toc-text">七、坐标变换TF2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">8.4.1.</span> <span class="toc-text">7.1 基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="toc-number">8.4.2.</span> <span class="toc-text">7.2 坐标变换消息类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E9%9D%99%E6%80%81%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2"><span class="toc-number">8.4.3.</span> <span class="toc-text">7.3 静态坐标变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-%E5%8A%A8%E6%80%81%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2"><span class="toc-number">8.4.4.</span> <span class="toc-text">7.4 动态坐标变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-5-%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E7%9B%91%E5%90%AC"><span class="toc-number">8.4.5.</span> <span class="toc-text">7.5 坐标变换监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-6-TF2%E5%B7%A5%E5%85%B7"><span class="toc-number">8.4.6.</span> <span class="toc-text">7.6 TF2工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%84%9F%E7%9F%A5"><span class="toc-number">8.5.</span> <span class="toc-text">八、机器人感知</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E7%9B%B8%E6%9C%BA"><span class="toc-number">8.5.1.</span> <span class="toc-text">8.1 相机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E6%91%84%E5%83%8F%E5%A4%B4%E6%A0%87%E5%AE%9A"><span class="toc-number">8.5.2.</span> <span class="toc-text">8.2 摄像头标定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE"><span class="toc-number">8.5.3.</span> <span class="toc-text">8.3 激光雷达</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-4-%E7%82%B9%E4%BA%91%E6%95%B0%E6%8D%AE"><span class="toc-number">8.5.4.</span> <span class="toc-text">8.4 点云数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-5-OpenCV%E9%9B%86%E6%88%90"><span class="toc-number">8.5.5.</span> <span class="toc-text">8.5 OpenCV集成</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%8E%A7%E5%88%B6%EF%BC%88ros2-control%EF%BC%89"><span class="toc-number">8.6.</span> <span class="toc-text">九、机器人控制（ros2_control）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E6%A6%82%E8%BF%B0"><span class="toc-number">8.6.1.</span> <span class="toc-text">9.1 概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="toc-number">8.6.2.</span> <span class="toc-text">9.2 核心组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E7%A1%AC%E4%BB%B6%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%9E%8B"><span class="toc-number">8.6.3.</span> <span class="toc-text">9.3 硬件接口类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-4-%E5%B8%B8%E7%94%A8%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="toc-number">8.6.4.</span> <span class="toc-text">9.4 常用控制器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-5-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">8.6.5.</span> <span class="toc-text">9.5 常用命令行工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E5%AF%BC%E8%88%AA%E4%B8%8E%E5%BB%BA%E5%9B%BE%EF%BC%88Nav2%EF%BC%89"><span class="toc-number">8.7.</span> <span class="toc-text">十、导航与建图（Nav2）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-Nav2%E6%9E%B6%E6%9E%84"><span class="toc-number">8.7.1.</span> <span class="toc-text">10.1 Nav2架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-%E4%BB%A3%E4%BB%B7%E5%9C%B0%E5%9B%BE%EF%BC%88Costmap%EF%BC%89"><span class="toc-number">8.7.2.</span> <span class="toc-text">10.2 代价地图（Costmap）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-SLAM-Toolbox"><span class="toc-number">8.7.3.</span> <span class="toc-text">10.3 SLAM Toolbox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-4-AMCL%E5%AE%9A%E4%BD%8D"><span class="toc-number">8.7.4.</span> <span class="toc-text">10.4 AMCL定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-5-%E5%B8%B8%E7%94%A8%E5%AF%BC%E8%88%AA%E5%91%BD%E4%BB%A4"><span class="toc-number">8.7.5.</span> <span class="toc-text">10.5 常用导航命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E8%A1%8C%E4%B8%BA%E6%A0%91%EF%BC%88Behavior-Tree%EF%BC%89"><span class="toc-number">8.8.</span> <span class="toc-text">十一、行为树（Behavior Tree）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">8.8.1.</span> <span class="toc-text">11.1 基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-2-%E8%A1%8C%E4%B8%BA%E6%A0%91-vs-%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">8.8.2.</span> <span class="toc-text">11.2 行为树 vs 有限状态机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-3-BehaviorTree-CPP%E5%BA%93"><span class="toc-number">8.8.3.</span> <span class="toc-text">11.3 BehaviorTree.CPP库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%8F%92%E4%BB%B6%E6%9C%BA%E5%88%B6%EF%BC%88pluginlib%EF%BC%89"><span class="toc-number">8.9.</span> <span class="toc-text">十二、插件机制（pluginlib）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#12-1-%E6%A6%82%E8%BF%B0"><span class="toc-number">8.9.1.</span> <span class="toc-text">12.1 概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-2-%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E6%AD%A5%E9%AA%A4"><span class="toc-number">8.9.2.</span> <span class="toc-text">12.2 插件开发步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-3-XML%E6%8F%92%E4%BB%B6%E6%8F%8F%E8%BF%B0%E6%96%87%E4%BB%B6%E7%A4%BA%E4%BE%8B"><span class="toc-number">8.9.3.</span> <span class="toc-text">12.3 XML插件描述文件示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-4-%E6%8F%92%E4%BB%B6%E5%8A%A0%E8%BD%BD%E7%A4%BA%E4%BE%8B"><span class="toc-number">8.9.4.</span> <span class="toc-text">12.4 插件加载示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%B8%B8%E7%94%A8%E5%8A%9F%E8%83%BD%E5%8C%85%E4%B8%8E%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="toc-number">8.10.</span> <span class="toc-text">十三、常用功能包与消息类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#13-1-%E5%B8%B8%E7%94%A8%E6%B6%88%E6%81%AF%E5%8C%85"><span class="toc-number">8.10.1.</span> <span class="toc-text">13.1 常用消息包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-2-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E6%B1%87%E6%80%BB"><span class="toc-number">8.10.2.</span> <span class="toc-text">13.2 常用命令行工具汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.11.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="机器人操作系统">机器人操作系统</a><time datetime="2026-04-12T16:00:00.000Z" title="发表于 2026-04-13 00:00:00">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6-1-%E7%B3%BB%E7%BB%9F%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E7%9A%84%E5%86%85%E6%B6%B5%E5%8F%8A%E8%A6%81%E7%82%B9/" title="软件架构与中间件-1_系统体系结构的内涵及要点">软件架构与中间件-1_系统体系结构的内涵及要点</a><time datetime="2026-04-09T08:43:20.000Z" title="发表于 2026-04-09 16:43:20">2026-04-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/08/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-4/" title="软件过程与项目管理-4">软件过程与项目管理-4</a><time datetime="2026-04-08T10:52:14.000Z" title="发表于 2026-04-08 18:52:14">2026-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/04/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-3/" title="软件过程与项目管理-3">软件过程与项目管理-3</a><time datetime="2026-04-04T10:50:53.000Z" title="发表于 2026-04-04 18:50:53">2026-04-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/" title="软件过程与项目管理-2">软件过程与项目管理-2</a><time datetime="2026-04-03T10:48:47.000Z" title="发表于 2026-04-03 18:48:47">2026-04-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Cipher</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
