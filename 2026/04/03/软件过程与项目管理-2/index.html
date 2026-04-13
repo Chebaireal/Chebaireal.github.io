@@ -1,0 +1,391 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>软件过程与项目管理-2 | Hexo</title><meta name="author" content="Cipher"><meta name="copyright" content="Cipher"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、软件工程的本质：不同抽象层次之间的映射与转换任何软件系统开发的共同本质在于：从现实空间的需求到计算机空间的软件代码之间的映射与转换。  单步映射：直接从需求到代码 多步映射：通过中间抽象层（需求 → 设计 → 代码）   问题：单步映射与多步映射的优缺点分别是什么？  软件工程通过严格的规范和管理手段来缩小映射偏差，以牺牲“时间”提高“质量”。 两个核心映射 概念映射问题空间的概念 → 计算机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件过程与项目管理-2">
+<meta property="og:url" content="https://chebaireal.github.io/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、软件工程的本质：不同抽象层次之间的映射与转换任何软件系统开发的共同本质在于：从现实空间的需求到计算机空间的软件代码之间的映射与转换。  单步映射：直接从需求到代码 多步映射：通过中间抽象层（需求 → 设计 → 代码）   问题：单步映射与多步映射的优缺点分别是什么？  软件工程通过严格的规范和管理手段来缩小映射偏差，以牺牲“时间”提高“质量”。 两个核心映射 概念映射问题空间的概念 → 计算机">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chebaireal.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-04-03T10:48:47.000Z">
+<meta property="article:modified_time" content="2026-04-13T10:50:27.690Z">
+<meta property="article:author" content="Cipher">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="软件工程">
+<meta property="article:tag" content="项目管理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chebaireal.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "软件过程与项目管理-2",
+  "url": "https://chebaireal.github.io/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/",
+  "image": "https://chebaireal.github.io/img/butterfly-icon.png",
+  "datePublished": "2026-04-03T10:48:47.000Z",
+  "dateModified": "2026-04-13T10:50:27.690Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Cipher",
+      "url": "https://chebaireal.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://chebaireal.github.io/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '软件过程与项目管理-2',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hexo</span></a><a class="nav-page-title" href="/"><span class="site-name">软件过程与项目管理-2</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">软件过程与项目管理-2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-03T10:48:47.000Z" title="发表于 2026-04-03 18:48:47">2026-04-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-13T10:50:27.690Z" title="更新于 2026-04-13 18:50:27">2026-04-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="一、软件工程的本质：不同抽象层次之间的映射与转换"><a href="#一、软件工程的本质：不同抽象层次之间的映射与转换" class="headerlink" title="一、软件工程的本质：不同抽象层次之间的映射与转换"></a>一、软件工程的本质：不同抽象层次之间的映射与转换</h2><p>任何软件系统开发的共同本质在于：<strong>从现实空间的需求到计算机空间的软件代码之间的映射与转换</strong>。</p>
+<ul>
+<li><strong>单步映射</strong>：直接从需求到代码</li>
+<li><strong>多步映射</strong>：通过中间抽象层（需求 → 设计 → 代码）</li>
+</ul>
+<blockquote>
+<p><strong>问题</strong>：单步映射与多步映射的优缺点分别是什么？</p>
+</blockquote>
+<p>软件工程通过<strong>严格的规范和管理手段</strong>来缩小映射偏差，以<strong>牺牲“时间”提高“质量”</strong>。</p>
+<h3 id="两个核心映射"><a href="#两个核心映射" class="headerlink" title="两个核心映射"></a>两个核心映射</h3><ol>
+<li><p><strong>概念映射</strong><br>问题空间的概念 → 计算机解空间的模型化概念  </p>
+<ul>
+<li>例如：“学生” → <code>Class Student</code></li>
+</ul>
+</li>
+<li><p><strong>业务逻辑映射</strong><br>问题空间的处理逻辑 → 解空间的处理逻辑  </p>
+<ul>
+<li>例如：计算平均分 → <code>calculateAverageScore()</code></li>
+</ul>
+</li>
+</ol>
+<p>软件工程需要解决：</p>
+<ul>
+<li>设置哪些抽象层次？</li>
+<li>每层的概念与表达方式？</li>
+<li>层间如何映射？</li>
+</ul>
+<h3 id="映射过程的具体活动"><a href="#映射过程的具体活动" class="headerlink" title="映射过程的具体活动"></a>映射过程的具体活动</h3><table>
+<thead>
+<tr>
+<th>活动</th>
+<th>输入 → 输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需求分析</td>
+<td>现实需求 → 需求规约</td>
+</tr>
+<tr>
+<td>软件设计</td>
+<td>需求规约 → 设计规约</td>
+</tr>
+<tr>
+<td>实现</td>
+<td>设计规约 → 代码</td>
+</tr>
+<tr>
+<td>验证&#x2F;确认</td>
+<td>各阶段产物的一致性检查</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、软件工程关注的目标"><a href="#二、软件工程关注的目标" class="headerlink" title="二、软件工程关注的目标"></a>二、软件工程关注的目标</h2><h3 id="产品与过程的二相性"><a href="#产品与过程的二相性" class="headerlink" title="产品与过程的二相性"></a>产品与过程的二相性</h3><ul>
+<li><strong>产品</strong>：各抽象层次的产出物（用例图、类图、代码、测试报告等）</li>
+<li><strong>过程</strong>：各抽象层次之间的映射与转换</li>
+</ul>
+<blockquote>
+<p>必须将产品与过程结合起来考虑，不能忽略任何一方。</p>
+</blockquote>
+<h3 id="功能性需求"><a href="#功能性需求" class="headerlink" title="功能性需求"></a>功能性需求</h3><ul>
+<li><strong>完备性</strong>：支持用户所有需求功能</li>
+<li><strong>正确性</strong>：在需求范围内正确执行</li>
+<li><strong>健壮性</strong>：在异常情况下正常运行（容错、恢复）</li>
+<li><strong>可靠性</strong>：给定时间条件下不发生故障</li>
+</ul>
+<h3 id="非功能性需求"><a href="#非功能性需求" class="headerlink" title="非功能性需求"></a>非功能性需求</h3><ul>
+<li>效率（时间-空间）</li>
+<li>可用性（易用、易学）</li>
+<li>可维护性（适应变化）</li>
+<li>可移植性</li>
+<li>清晰性（易读、易理解）</li>
+<li>安全性</li>
+<li>兼容性</li>
+<li>经济性（成本、时间、市场）</li>
+<li>商业质量（上市时间、收益、生命周期）</li>
+</ul>
+<h3 id="目标之间的折中（Trade-off）"><a href="#目标之间的折中（Trade-off）" class="headerlink" title="目标之间的折中（Trade-off）"></a>目标之间的折中（Trade-off）</h3><p>不同类型软件侧重点不同：</p>
+<ul>
+<li>实时系统：可靠性、效率</li>
+<li>长生命周期软件：可移植性、可维护性</li>
+</ul>
+<blockquote>
+<p>多个目标同时最优不现实，目标之间常相互冲突。</p>
+</blockquote>
+<hr>
+<h2 id="三、软件开发中的多角色"><a href="#三、软件开发中的多角色" class="headerlink" title="三、软件开发中的多角色"></a>三、软件开发中的多角色</h2><h3 id="客户方（甲方）"><a href="#客户方（甲方）" class="headerlink" title="客户方（甲方）"></a>客户方（甲方）</h3><ul>
+<li>决策者（CXO）</li>
+<li>终端用户</li>
+<li>系统管理员</li>
+</ul>
+<h3 id="开发公司（乙方）"><a href="#开发公司（乙方）" class="headerlink" title="开发公司（乙方）"></a>开发公司（乙方）</h3><ul>
+<li>决策者</li>
+<li>销售与市场人员</li>
+<li>咨询师、需求分析师</li>
+<li>架构师、设计师</li>
+<li>开发经理&#x2F;项目经理、程序员</li>
+<li>维护人员</li>
+</ul>
+<h3 id="不同角色的关注点（部分示例）"><a href="#不同角色的关注点（部分示例）" class="headerlink" title="不同角色的关注点（部分示例）"></a>不同角色的关注点（部分示例）</h3><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>关注点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发人员</td>
+<td>易调试性、可修改性</td>
+</tr>
+<tr>
+<td>开发经理</td>
+<td>可测试性</td>
+</tr>
+<tr>
+<td>销售人员</td>
+<td>结构清晰性</td>
+</tr>
+<tr>
+<td>顾客</td>
+<td>功能性</td>
+</tr>
+<tr>
+<td>终端用户</td>
+<td>易用性</td>
+</tr>
+<tr>
+<td>系统管理员</td>
+<td>性能、稳定性、易安装</td>
+</tr>
+<tr>
+<td>维护人员</td>
+<td>可维护性</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>思考题</strong>：不同角色的关注点是否有重叠或冲突？</p>
+</blockquote>
+<hr>
+<h2 id="四、软件工程-最佳实践"><a href="#四、软件工程-最佳实践" class="headerlink" title="四、软件工程 &#x3D; 最佳实践"></a>四、软件工程 &#x3D; 最佳实践</h2><p>软件复杂性、易变性、不可见性使得高深理论难以直接应用。<br>软件工程被视为<strong>实践的艺术</strong>：经验越丰富，成功率越高。</p>
+<h3 id="经典最佳实践示例"><a href="#经典最佳实践示例" class="headerlink" title="经典最佳实践示例"></a>经典最佳实践示例</h3><p><strong>Boehm 七条原理（1983）</strong></p>
+<ol>
+<li>用分阶段的生命周期计划严格管理</li>
+<li>坚持进行阶段评审</li>
+<li>实行严格的产品控制</li>
+<li>采用现代程序设计技术</li>
+<li>结果应能清楚地审查</li>
+<li>开发小组的人员应少而精</li>
+<li>不断改进开发过程</li>
+</ol>
+<p><strong>IBM RUP 最佳实践</strong></p>
+<ul>
+<li>迭代化开发</li>
+<li>需求管理</li>
+<li>基于构件的体系结构</li>
+<li>可视化软件建模</li>
+<li>持续质量验证</li>
+<li>控制软件变更</li>
+</ul>
+<p><strong>Scrum 敏捷实践</strong></p>
+<ul>
+<li>产品计划会议（用户故事）</li>
+<li>冲刺计划会议（分解任务）</li>
+<li>每日站会</li>
+<li>冲刺评审会</li>
+<li>冲刺回顾会</li>
+<li>2-4周迭代，冲刺期间不允许需求变更</li>
+<li>5-9人自组织团队</li>
+</ul>
+<blockquote>
+<p>⚠️ 别人的经验在没有实践之前，对你来说只是抽象的概念。</p>
+</blockquote>
+<h3 id="与客户沟通的最佳实践（示例）"><a href="#与客户沟通的最佳实践（示例）" class="headerlink" title="与客户沟通的最佳实践（示例）"></a>与客户沟通的最佳实践（示例）</h3><ol>
+<li>识别沟通对象</li>
+<li>确定沟通方式</li>
+<li>确定共同目标与范围</li>
+<li>评审并修改范围说明</li>
+<li>讨论典型场景与功能</li>
+<li>记录并细化</li>
+<li>分配优先级</li>
+<li>最终评审</li>
+<li>双方签字</li>
+</ol>
+<hr>
+<h2 id="五、软件工程的四个核心理论概念"><a href="#五、软件工程的四个核心理论概念" class="headerlink" title="五、软件工程的四个核心理论概念"></a>五、软件工程的四个核心理论概念</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>含义</th>
+<th>核心问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>分而治之</strong></td>
+<td>将复杂问题分解为独立子问题分别求解</td>
+<td>如何分解才能更易理解、开发、维护？</td>
+</tr>
+<tr>
+<td><strong>复用</strong></td>
+<td>使用已有架构、框架、模块组装新系统</td>
+<td>不要重复造轮子（DRY）</td>
+</tr>
+<tr>
+<td><strong>折中</strong></td>
+<td>在矛盾需求间作出合理取舍</td>
+<td>如何调和矛盾？</td>
+</tr>
+<tr>
+<td><strong>演化</strong></td>
+<td>软件不断成长以适应变化</td>
+<td>如何设计使软件具有适应变化的能力？</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>其他相关概念：概念与形式模型、抽象层次、一致性与完备性、效率。</p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章核心要点：</p>
+<ol>
+<li>软件工程本质是<strong>不同抽象层次之间的映射与转换</strong></li>
+<li>同时关注<strong>产品与过程</strong>，并权衡多种质量目标</li>
+<li>软件开发是<strong>多角色协作</strong>，视角不同需求不同</li>
+<li>软件工程 &#x3D; <strong>最佳实践</strong>的积累与运用</li>
+<li>四大核心理论：<strong>分治、复用、折中、演化</strong></li>
+</ol>
+<blockquote>
+<p>💡 个人思考：软件工程不是纯理论，而是经验科学。多实践、多犯错、多总结，才能真正理解这些思想。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://chebaireal.github.io">Cipher</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://chebaireal.github.io/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/">https://chebaireal.github.io/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://chebaireal.github.io" target="_blank">Hexo</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/">软件工程</a><a class="post-meta__tags" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">项目管理</a><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/04/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-3/" title="软件过程与项目管理-3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">软件过程与项目管理-3</div></div><div class="info-2"><div class="info-item-1">一、软件过程与生命周期软件生命周期（SDLC） From 0 to 1：从无到有，开发出第一个版本 From 1 to n：持续演化，发布多个版本  软件过程的定义软件过程是指在软件开发生命周期中的一系列有序的活动、任务和步骤，用于开发、维护和管理软件系统。 软件过程定义了：  人员与分工 所执行的活动 活动的细节和步骤  软件过程的目的 标准化（可模仿） 可预见性（降低风险） 提高开发效率 获得高质量产品 提升制定时间和预算计划的能力  黑盒过程 vs 白盒过程   类型 特点 缺点    黑盒过程 需求→开发→交付，类似产品制造 客户交互仅在开始和结束，需求变更困难   白盒过程 开发中持续获得客户反馈，允许变更 通过提高可见性降低风险   软件过程模型的实质指导软件项目 “何时做、做什么、怎么做、谁来做、如何控制” 的蓝图与框架。  二、软件过程模型分类   类型 特点 代表模型    预测型 提前大量计划，一次性连续执行 瀑布模型、V模型、形式化过程   迭代型 允许对未完成工作反馈改进 螺旋模型、原型模型   增量型 分次交付可立即使用的成果 增量模型、RAD   敏捷...</div></div></div></a><a class="pagination-related" href="/2026/04/02/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-1/" title="软件过程与项目管理-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">软件过程与项目管理-1</div></div><div class="info-2"><div class="info-item-1">一、软件的基本概念一个例子：从“程序”到“软件”到“服务”   阶段 形态 特点    给孩子用 程序 规模小，需求简单   给全校用 软件 规模扩大，需求复杂   放在网站上 服务 规模巨大，需求多变    规模越来越大，需求越来越复杂，难度越来越大，所需时间越来越长，出错的概率也越来越大  什么是软件？软件（Software）：一组对象或项目所形成的一个**“配置”，由程序、文档和数据**等部分构成。  程序（Program）：可被计算机硬件理解并执行的一组指令，提供期望的功能和性能 数据（Data Structure）：程序能正常操纵信息的数据结构 文档（Document）：与程序开发、维护和使用有关的图文材料   ⚠️ 程序 ≠ 软件  软件的四大特征   特征 说明    复杂性（Complexity） 现实问题复杂，手工开发，智力密集型，与人的水平密切相关   不可见性（Invisibility） 未完成的软件看不见，难以刻画和度量，沟通困难   易变性（Changeability） 应用环境（人群、法规、硬件、领域）频繁快速变化   一致性（Conformity） ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/04/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-3/" title="软件过程与项目管理-3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-04</div><div class="info-item-2">软件过程与项目管理-3</div></div><div class="info-2"><div class="info-item-1">一、软件过程与生命周期软件生命周期（SDLC） From 0 to 1：从无到有，开发出第一个版本 From 1 to n：持续演化，发布多个版本  软件过程的定义软件过程是指在软件开发生命周期中的一系列有序的活动、任务和步骤，用于开发、维护和管理软件系统。 软件过程定义了：  人员与分工 所执行的活动 活动的细节和步骤  软件过程的目的 标准化（可模仿） 可预见性（降低风险） 提高开发效率 获得高质量产品 提升制定时间和预算计划的能力  黑盒过程 vs 白盒过程   类型 特点 缺点    黑盒过程 需求→开发→交付，类似产品制造 客户交互仅在开始和结束，需求变更困难   白盒过程 开发中持续获得客户反馈，允许变更 通过提高可见性降低风险   软件过程模型的实质指导软件项目 “何时做、做什么、怎么做、谁来做、如何控制” 的蓝图与框架。  二、软件过程模型分类   类型 特点 代表模型    预测型 提前大量计划，一次性连续执行 瀑布模型、V模型、形式化过程   迭代型 允许对未完成工作反馈改进 螺旋模型、原型模型   增量型 分次交付可立即使用的成果 增量模型、RAD   敏捷...</div></div></div></a><a class="pagination-related" href="/2026/04/02/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-1/" title="软件过程与项目管理-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-02</div><div class="info-item-2">软件过程与项目管理-1</div></div><div class="info-2"><div class="info-item-1">一、软件的基本概念一个例子：从“程序”到“软件”到“服务”   阶段 形态 特点    给孩子用 程序 规模小，需求简单   给全校用 软件 规模扩大，需求复杂   放在网站上 服务 规模巨大，需求多变    规模越来越大，需求越来越复杂，难度越来越大，所需时间越来越长，出错的概率也越来越大  什么是软件？软件（Software）：一组对象或项目所形成的一个**“配置”，由程序、文档和数据**等部分构成。  程序（Program）：可被计算机硬件理解并执行的一组指令，提供期望的功能和性能 数据（Data Structure）：程序能正常操纵信息的数据结构 文档（Document）：与程序开发、维护和使用有关的图文材料   ⚠️ 程序 ≠ 软件  软件的四大特征   特征 说明    复杂性（Complexity） 现实问题复杂，手工开发，智力密集型，与人的水平密切相关   不可见性（Invisibility） 未完成的软件看不见，难以刻画和度量，沟通困难   易变性（Changeability） 应用环境（人群、法规、硬件、领域）频繁快速变化   一致性（Conformity） ...</div></div></div></a><a class="pagination-related" href="/2026/04/08/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-4/" title="软件过程与项目管理-4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-08</div><div class="info-item-2">软件过程与项目管理-4</div></div><div class="info-2"><div class="info-item-1">一、为何要“敏捷”？时代背景变化   时代 特点    1960-70年代 大型研究机构、军方项目，庞大、高准确度要求   1980-90年代 桌面软件时代，周期缩短，发布介质为CD&#x2F;DVD，更新成本高   互联网时代 服务通过网络实现，小团队可开发，技术更新快，用户需求变化快   敏捷的驱动力 变化无处不在，不可避免 传统长周期项目即使按期交付，商业价值可能已偏离预期 客户期望尽早获得可用软件，实现商业价值 软件公司期望尽早交付，实现利润回报  传统方法 vs 敏捷方法 传统方法：难以应对频繁变化、快速交付 敏捷方法：成本变化曲线更平缓，后期变更成本相对较低   二、敏捷软件开发宣言（2001）   敏捷宣言 传统倾向    个体和互动 胜过 过程和工具 过程和工具   可运行的软件 胜过 面面俱到的文档 comprehensive documentation   客户合作 胜过 合同谈判 合同谈判   响应变化 胜过 遵循计划 遵循计划   12条原则（核心提炼） 最高目标：尽早和持续交付有价值的软件满足客户 欢迎需求变更（即使后期），帮助客户获得竞争优势 频繁交付...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Cipher</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%9A%84%E6%9C%AC%E8%B4%A8%EF%BC%9A%E4%B8%8D%E5%90%8C%E6%8A%BD%E8%B1%A1%E5%B1%82%E6%AC%A1%E4%B9%8B%E9%97%B4%E7%9A%84%E6%98%A0%E5%B0%84%E4%B8%8E%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.</span> <span class="toc-text">一、软件工程的本质：不同抽象层次之间的映射与转换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%98%A0%E5%B0%84"><span class="toc-number">1.1.</span> <span class="toc-text">两个核心映射</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%A0%E5%B0%84%E8%BF%87%E7%A8%8B%E7%9A%84%E5%85%B7%E4%BD%93%E6%B4%BB%E5%8A%A8"><span class="toc-number">1.2.</span> <span class="toc-text">映射过程的具体活动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E5%85%B3%E6%B3%A8%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="toc-number">2.</span> <span class="toc-text">二、软件工程关注的目标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E5%93%81%E4%B8%8E%E8%BF%87%E7%A8%8B%E7%9A%84%E4%BA%8C%E7%9B%B8%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">产品与过程的二相性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E6%80%A7%E9%9C%80%E6%B1%82"><span class="toc-number">2.2.</span> <span class="toc-text">功能性需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E5%8A%9F%E8%83%BD%E6%80%A7%E9%9C%80%E6%B1%82"><span class="toc-number">2.3.</span> <span class="toc-text">非功能性需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%E4%B9%8B%E9%97%B4%E7%9A%84%E6%8A%98%E4%B8%AD%EF%BC%88Trade-off%EF%BC%89"><span class="toc-number">2.4.</span> <span class="toc-text">目标之间的折中（Trade-off）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E5%A4%9A%E8%A7%92%E8%89%B2"><span class="toc-number">3.</span> <span class="toc-text">三、软件开发中的多角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E6%96%B9%EF%BC%88%E7%94%B2%E6%96%B9%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">客户方（甲方）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E5%85%AC%E5%8F%B8%EF%BC%88%E4%B9%99%E6%96%B9%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">开发公司（乙方）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E8%A7%92%E8%89%B2%E7%9A%84%E5%85%B3%E6%B3%A8%E7%82%B9%EF%BC%88%E9%83%A8%E5%88%86%E7%A4%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">不同角色的关注点（部分示例）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">4.</span> <span class="toc-text">四、软件工程 &#x3D; 最佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E7%A4%BA%E4%BE%8B"><span class="toc-number">4.1.</span> <span class="toc-text">经典最佳实践示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%AE%A2%E6%88%B7%E6%B2%9F%E9%80%9A%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%88%E7%A4%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">与客户沟通的最佳实践（示例）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%9A%84%E5%9B%9B%E4%B8%AA%E6%A0%B8%E5%BF%83%E7%90%86%E8%AE%BA%E6%A6%82%E5%BF%B5"><span class="toc-number">5.</span> <span class="toc-text">五、软件工程的四个核心理论概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6-1-%E7%B3%BB%E7%BB%9F%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E7%9A%84%E5%86%85%E6%B6%B5%E5%8F%8A%E8%A6%81%E7%82%B9/" title="软件架构与中间件-1_系统体系结构的内涵及要点">软件架构与中间件-1_系统体系结构的内涵及要点</a><time datetime="2026-04-09T08:43:20.000Z" title="发表于 2026-04-09 16:43:20">2026-04-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/08/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-4/" title="软件过程与项目管理-4">软件过程与项目管理-4</a><time datetime="2026-04-08T10:52:14.000Z" title="发表于 2026-04-08 18:52:14">2026-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/04/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-3/" title="软件过程与项目管理-3">软件过程与项目管理-3</a><time datetime="2026-04-04T10:50:53.000Z" title="发表于 2026-04-04 18:50:53">2026-04-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-2/" title="软件过程与项目管理-2">软件过程与项目管理-2</a><time datetime="2026-04-03T10:48:47.000Z" title="发表于 2026-04-03 18:48:47">2026-04-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/02/%E8%BD%AF%E4%BB%B6%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86-1/" title="软件过程与项目管理-1">软件过程与项目管理-1</a><time datetime="2026-04-02T10:46:07.000Z" title="发表于 2026-04-02 18:46:07">2026-04-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Cipher</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
